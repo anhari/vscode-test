@@ -10,14 +10,29 @@
     "Other"
   ],
   "activationEvents": [
-    "onCommand:vscode-test.helloWorld"
+    "onCommand:vscode-test.runAllTests",
+    "onCommand:vscode-test.runFileTests",
+    "onCommand:vscode-test.runLineTests",
+    "onCommand:vscode-test.runLastTests"
   ],
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
       {
-        "command": "vscode-test.helloWorld",
-        "title": "Hello World"
+        "command": "vscode-test.runAllTests",
+        "title": "Run All Tests"
+      },
+      {
+        "command": "vscode-test.runFileTests",
+        "title": "Run Tests for File"
+      },
+      {
+        "command": "vscode-test.runLineTests",
+        "title": "Run Tests for Current Line"
+      },
+      {
+        "command": "vscode-test.runLastTests",
+        "title": "Run Last Tests"
       }
     ]
   },

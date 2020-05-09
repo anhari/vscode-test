@@ -23,15 +23,24 @@ export const activate = (context: vscode.ExtensionContext) => {
           vscode.window.createTerminal("Test Runner");
         switch (currentLanguage) {
           case "ruby":
-            let test = `bin/rails test ${currentRelativePath}`;
+            let rubyTest = `bin/rails test ${currentRelativePath}`;
             terminal.show(true);
             vscode.commands
               .executeCommand("workbench.action.terminal.clear")
               .then(() => {
-                terminal.sendText(test, true);
-                lastTest = test;
+                terminal.sendText(rubyTest, true);
+                lastTest = rubyTest;
               });
             break;
+          case "elixir":
+            let elixirTest = `mix test ${currentRelativePath}`;
+            terminal.show(true);
+            vscode.commands
+              .executeCommand("workbench.action.terminal.clear")
+              .then(() => {
+                terminal.sendText(elixirTest, true);
+                lastTest = elixirTest;
+              });
           default:
             break;
         }
@@ -55,16 +64,24 @@ export const activate = (context: vscode.ExtensionContext) => {
           vscode.window.createTerminal("Test Runner");
         switch (currentLanguage) {
           case "ruby":
+            let rubyTest = `bin/rails test ${currentRelativePath}:${currentLineNumber}`;
             terminal.show(true);
             vscode.commands
               .executeCommand("workbench.action.terminal.clear")
               .then(() => {
-                terminal.sendText(
-                  `bin/rails test ${currentRelativePath}:${currentLineNumber}`,
-                  true
-                );
+                terminal.sendText(rubyTest, true);
+                lastTest = rubyTest;
               });
             break;
+          case "elixir":
+            let elixirTest = `mix test ${currentRelativePath}:${currentLineNumber}`;
+            terminal.show(true);
+            vscode.commands
+              .executeCommand("workbench.action.terminal.clear")
+              .then(() => {
+                terminal.sendText(elixirTest, true);
+                lastTest = elixirTest;
+              });
           default:
             break;
         }

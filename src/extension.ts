@@ -1,38 +1,11 @@
 import * as vscode from "vscode";
 
 export const activate = (context: vscode.ExtensionContext) => {
+  var lastTest: string;
+
   let runAllTests = vscode.commands.registerCommand(
     "vscode-test.runAllTests",
-    () => {
-      const activeTextEditor = vscode.window.activeTextEditor;
-      if (activeTextEditor) {
-        const currentFileName = activeTextEditor.document.fileName;
-        const currentLanguage = activeTextEditor.document.languageId;
-        const currentLineNumber = activeTextEditor.selection.active.line + 1;
-        const currentRelativePath = vscode.workspace.asRelativePath(
-          currentFileName
-        );
-        const existingTerminals = vscode.window.terminals;
-        const terminal =
-          existingTerminals.find((term) => term.name === "Test Runner") ||
-          vscode.window.createTerminal("Test Runner");
-        switch (currentLanguage) {
-          case "ruby":
-            terminal.show(true);
-            vscode.commands
-              .executeCommand("workbench.action.terminal.clear")
-              .then(() => {
-                terminal.sendText(
-                  `bin/rails test ${currentRelativePath}:${currentLineNumber}`,
-                  true
-                );
-              });
-            break;
-          default:
-            break;
-        }
-      }
-    }
+    () => {}
   );
   let runFileTests = vscode.commands.registerCommand(
     "vscode-test.runFileTests",
@@ -41,7 +14,6 @@ export const activate = (context: vscode.ExtensionContext) => {
       if (activeTextEditor) {
         const currentFileName = activeTextEditor.document.fileName;
         const currentLanguage = activeTextEditor.document.languageId;
-        const currentLineNumber = activeTextEditor.selection.active.line + 1;
         const currentRelativePath = vscode.workspace.asRelativePath(
           currentFileName
         );
@@ -51,14 +23,13 @@ export const activate = (context: vscode.ExtensionContext) => {
           vscode.window.createTerminal("Test Runner");
         switch (currentLanguage) {
           case "ruby":
+            let test = `bin/rails test ${currentRelativePath}`;
             terminal.show(true);
             vscode.commands
               .executeCommand("workbench.action.terminal.clear")
               .then(() => {
-                terminal.sendText(
-                  `bin/rails test ${currentRelativePath}:${currentLineNumber}`,
-                  true
-                );
+                terminal.sendText(test, true);
+                lastTest = test;
               });
             break;
           default:
@@ -104,32 +75,18 @@ export const activate = (context: vscode.ExtensionContext) => {
     "vscode-test.runLastTests",
     () => {
       const activeTextEditor = vscode.window.activeTextEditor;
-      if (activeTextEditor) {
-        const currentFileName = activeTextEditor.document.fileName;
-        const currentLanguage = activeTextEditor.document.languageId;
-        const currentLineNumber = activeTextEditor.selection.active.line + 1;
-        const currentRelativePath = vscode.workspace.asRelativePath(
-          currentFileName
-        );
+
+      if (activeTextEditor && lastTest) {
         const existingTerminals = vscode.window.terminals;
         const terminal =
           existingTerminals.find((term) => term.name === "Test Runner") ||
           vscode.window.createTerminal("Test Runner");
-        switch (currentLanguage) {
-          case "ruby":
-            terminal.show(true);
-            vscode.commands
-              .executeCommand("workbench.action.terminal.clear")
-              .then(() => {
-                terminal.sendText(
-                  `bin/rails test ${currentRelativePath}:${currentLineNumber}`,
-                  true
-                );
-              });
-            break;
-          default:
-            break;
-        }
+        terminal.show(true);
+        vscode.commands
+          .executeCommand("workbench.action.terminal.clear")
+          .then(() => {
+            terminal.sendText(lastTest, true);
+          });
       }
     }
   );

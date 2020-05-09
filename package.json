@@ -42,6 +42,16 @@
           "type": "string",
           "default": "",
           "description": "Defines a command to run for all tests (i.e. 'bin/rails test', 'mix test'"
+        },
+        "vscode-test.rubyTestCommand": {
+          "type": "string",
+          "default": "",
+          "description": "Defines a test command to use for ruby files."
+        },
+        "vscode-test.elixirTestCommand": {
+          "type": "string",
+          "default": "",
+          "description": "Defines a test command to use for elixir files."
         }
       }
     }

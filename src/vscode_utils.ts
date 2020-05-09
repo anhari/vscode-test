@@ -30,7 +30,7 @@ const activeFile = (activeTextEditor: vscode.TextEditor): ActiveFile => {
   };
 };
 
-const findOrCreateTerminal = () => {
+const findOrCreateTerminal = (): vscode.Terminal => {
   const existingTerminals = vscode.window.terminals;
   return (
     existingTerminals.find((term) => term.name === TERMINAL_NAME) ||
@@ -41,7 +41,7 @@ const findOrCreateTerminal = () => {
 const executeTestCommand = (
   command: string,
   activeTextEditor: vscode.TextEditor | undefined
-) => {
+): void => {
   activeTextEditor?.document.save();
   vscode.commands.executeCommand("workbench.action.terminal.clear").then(() => {
     const terminal = findOrCreateTerminal();

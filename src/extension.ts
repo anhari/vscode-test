@@ -1,10 +1,40 @@
 import * as vscode from "vscode";
 
 const TERMINAL_NAME = "Test Runner";
+let lastTest: string;
+
+const activeFile = (activeTextEditor: vscode.TextEditor) => {
+  return {
+    fileName: activeTextEditor.document.fileName,
+    language: activeTextEditor.document.languageId,
+    relativePath: vscode.workspace.asRelativePath(
+      activeTextEditor.document.fileName
+    ),
+    lineNumber: activeTextEditor.selection.active.line + 1,
+  };
+};
+
+const findOrCreateTerminal = () => {
+  const existingTerminals = vscode.window.terminals;
+  return (
+    existingTerminals.find((term) => term.name === TERMINAL_NAME) ||
+    vscode.window.createTerminal(TERMINAL_NAME)
+  );
+};
+
+const executeTestCommand = (
+  command: string,
+  activeTextEditor: vscode.TextEditor | undefined
+) => {
+  activeTextEditor?.document.save();
+  vscode.commands.executeCommand("workbench.action.terminal.clear").then(() => {
+    const terminal = findOrCreateTerminal();
+    terminal.sendText(command, true);
+    lastTest = command;
+  });
+};
 
 export const activate = (context: vscode.ExtensionContext) => {
-  var lastTest: string;
-
   let runAllTests = vscode.commands.registerCommand(
     "vscode-test.runAllTests",
     () => {
@@ -13,18 +43,9 @@ export const activate = (context: vscode.ExtensionContext) => {
         | undefined = vscode.workspace
         .getConfiguration("vscode-test")
         .get("runAllTestsCommand");
-      vscode.window.activeTextEditor?.document.save();
+
       if (runAllTestsCommand) {
-        const existingTerminals = vscode.window.terminals;
-        const terminal =
-          existingTerminals.find((term) => term.name === TERMINAL_NAME) ||
-          vscode.window.createTerminal(TERMINAL_NAME);
-        vscode.commands
-          .executeCommand("workbench.action.terminal.clear")
-          .then(() => {
-            terminal.sendText(runAllTestsCommand, true);
-            lastTest = runAllTestsCommand;
-          });
+        executeTestCommand(runAllTestsCommand, vscode.window.activeTextEditor);
       }
     }
   );
@@ -34,41 +55,26 @@ export const activate = (context: vscode.ExtensionContext) => {
     () => {
       const activeTextEditor = vscode.window.activeTextEditor;
       if (activeTextEditor) {
-        activeTextEditor.document.save();
-        const currentFileName = activeTextEditor.document.fileName;
-        const currentLanguage = activeTextEditor.document.languageId;
-        const currentRelativePath = vscode.workspace.asRelativePath(
-          currentFileName
-        );
-        const existingTerminals = vscode.window.terminals;
-        const terminal =
-          existingTerminals.find((term) => term.name === TERMINAL_NAME) ||
-          vscode.window.createTerminal(TERMINAL_NAME);
-        switch (currentLanguage) {
+        const file = activeFile(activeTextEditor);
+        switch (file.language) {
           case "ruby":
-            let rubyTest: string;
-            if (currentFileName.match(/_spec.rb$/)) {
-              rubyTest = `bin/rspec ${currentRelativePath}`;
+            if (file.fileName.match(/_spec.rb$/)) {
+              executeTestCommand(
+                `bin/rspec ${file.relativePath}`,
+                activeTextEditor
+              );
             } else {
-              rubyTest = `bin/rails test ${currentRelativePath}`;
+              executeTestCommand(
+                `bin/rails test ${file.relativePath}`,
+                activeTextEditor
+              );
             }
-            terminal.show(true);
-            vscode.commands
-              .executeCommand("workbench.action.terminal.clear")
-              .then(() => {
-                terminal.sendText(rubyTest, true);
-                lastTest = rubyTest;
-              });
             break;
           case "elixir":
-            let elixirTest = `mix test ${currentRelativePath}`;
-            terminal.show(true);
-            vscode.commands
-              .executeCommand("workbench.action.terminal.clear")
-              .then(() => {
-                terminal.sendText(elixirTest, true);
-                lastTest = elixirTest;
-              });
+            executeTestCommand(
+              `mix test ${file.relativePath}`,
+              activeTextEditor
+            );
           default:
             break;
         }
@@ -80,42 +86,26 @@ export const activate = (context: vscode.ExtensionContext) => {
     () => {
       const activeTextEditor = vscode.window.activeTextEditor;
       if (activeTextEditor) {
-        activeTextEditor.document.save();
-        const currentFileName = activeTextEditor.document.fileName;
-        const currentLanguage = activeTextEditor.document.languageId;
-        const currentLineNumber = activeTextEditor.selection.active.line + 1;
-        const currentRelativePath = vscode.workspace.asRelativePath(
-          currentFileName
-        );
-        const existingTerminals = vscode.window.terminals;
-        const terminal =
-          existingTerminals.find((term) => term.name === TERMINAL_NAME) ||
-          vscode.window.createTerminal(TERMINAL_NAME);
-        switch (currentLanguage) {
+        const file = activeFile(activeTextEditor);
+        switch (file.language) {
           case "ruby":
-            let rubyTest: string;
-            if (currentFileName.match(/_spec.rb$/)) {
-              rubyTest = `bin/rspec ${currentRelativePath}:${currentLineNumber}`;
+            if (file.fileName.match(/_spec.rb$/)) {
+              executeTestCommand(
+                `bin/rspec ${file.relativePath}:${file.lineNumber}`,
+                activeTextEditor
+              );
             } else {
-              rubyTest = `bin/rails test ${currentRelativePath}:${currentLineNumber}`;
+              executeTestCommand(
+                `bin/rails test ${file.relativePath}:${file.lineNumber}`,
+                activeTextEditor
+              );
             }
-            terminal.show(true);
-            vscode.commands
-              .executeCommand("workbench.action.terminal.clear")
-              .then(() => {
-                terminal.sendText(rubyTest, true);
-                lastTest = rubyTest;
-              });
             break;
           case "elixir":
-            let elixirTest = `mix test ${currentRelativePath}:${currentLineNumber}`;
-            terminal.show(true);
-            vscode.commands
-              .executeCommand("workbench.action.terminal.clear")
-              .then(() => {
-                terminal.sendText(elixirTest, true);
-                lastTest = elixirTest;
-              });
+            executeTestCommand(
+              `mix test ${file.relativePath}:${file.lineNumber}`,
+              activeTextEditor
+            );
           default:
             break;
         }
@@ -129,17 +119,7 @@ export const activate = (context: vscode.ExtensionContext) => {
       const activeTextEditor = vscode.window.activeTextEditor;
 
       if (activeTextEditor && lastTest) {
-        activeTextEditor.document.save();
-        const existingTerminals = vscode.window.terminals;
-        const terminal =
-          existingTerminals.find((term) => term.name === TERMINAL_NAME) ||
-          vscode.window.createTerminal(TERMINAL_NAME);
-        terminal.show(true);
-        vscode.commands
-          .executeCommand("workbench.action.terminal.clear")
-          .then(() => {
-            terminal.sendText(lastTest, true);
-          });
+        executeTestCommand(lastTest, activeTextEditor);
       }
     }
   );

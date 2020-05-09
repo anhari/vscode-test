@@ -1,4 +1,4 @@
-import { ActiveFile, executeTestCommand } from "../extension";
+import { ActiveFile, executeTestCommand } from "../vscode_utils";
 
 const elixirTestRunner = (file: ActiveFile, scope: "file" | "line") => {
   let command: string;

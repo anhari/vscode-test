@@ -1,62 +1,21 @@
 import * as vscode from "vscode";
 import { rubyTestRunner } from "./runners/ruby";
 import { elixirTestRunner } from "./runners/elixir";
-
-const TERMINAL_NAME = "Test Runner";
-let lastTest: string;
-
-type ActiveFile = {
-  activeTextEditor: vscode.TextEditor;
-  fileName: string;
-  language: string;
-  relativePath: string;
-  lineNumber: number;
-};
-
-const activeFile = (activeTextEditor: vscode.TextEditor): ActiveFile => {
-  return {
-    activeTextEditor,
-    fileName: activeTextEditor.document.fileName,
-    language: activeTextEditor.document.languageId,
-    relativePath: vscode.workspace.asRelativePath(
-      activeTextEditor.document.fileName
-    ),
-    lineNumber: activeTextEditor.selection.active.line + 1,
-  };
-};
-
-const findOrCreateTerminal = () => {
-  const existingTerminals = vscode.window.terminals;
-  return (
-    existingTerminals.find((term) => term.name === TERMINAL_NAME) ||
-    vscode.window.createTerminal(TERMINAL_NAME)
-  );
-};
-
-const executeTestCommand = (
-  command: string,
-  activeTextEditor: vscode.TextEditor | undefined
-) => {
-  activeTextEditor?.document.save();
-  vscode.commands.executeCommand("workbench.action.terminal.clear").then(() => {
-    const terminal = findOrCreateTerminal();
-    terminal.sendText(command, true);
-    lastTest = command;
-  });
-};
+import {
+  activeFile,
+  executeTestCommand,
+  lastTest,
+  getActiveTextEditor,
+  getConfigurationSetting,
+} from "./vscode_utils";
 
 export const activate = (context: vscode.ExtensionContext) => {
   let runAllTests = vscode.commands.registerCommand(
     "vscode-test.runAllTests",
     () => {
-      const runAllTestsCommand:
-        | string
-        | undefined = vscode.workspace
-        .getConfiguration("vscode-test")
-        .get("runAllTestsCommand");
-
+      const runAllTestsCommand = getConfigurationSetting("runAllTestsCommand");
       if (runAllTestsCommand) {
-        executeTestCommand(runAllTestsCommand, vscode.window.activeTextEditor);
+        executeTestCommand(runAllTestsCommand, getActiveTextEditor());
       }
     }
   );
@@ -64,7 +23,7 @@ export const activate = (context: vscode.ExtensionContext) => {
   let runFileTests = vscode.commands.registerCommand(
     "vscode-test.runFileTests",
     () => {
-      const activeTextEditor = vscode.window.activeTextEditor;
+      const activeTextEditor = getActiveTextEditor();
       if (activeTextEditor) {
         const file = activeFile(activeTextEditor);
         switch (file.language) {
@@ -83,7 +42,7 @@ export const activate = (context: vscode.ExtensionContext) => {
   let runLineTests = vscode.commands.registerCommand(
     "vscode-test.runLineTests",
     () => {
-      const activeTextEditor = vscode.window.activeTextEditor;
+      const activeTextEditor = getActiveTextEditor();
       if (activeTextEditor) {
         const file = activeFile(activeTextEditor);
         switch (file.language) {
@@ -103,8 +62,7 @@ export const activate = (context: vscode.ExtensionContext) => {
   let runLastTests = vscode.commands.registerCommand(
     "vscode-test.runLastTests",
     () => {
-      const activeTextEditor = vscode.window.activeTextEditor;
-
+      const activeTextEditor = getActiveTextEditor();
       if (activeTextEditor && lastTest) {
         executeTestCommand(lastTest, activeTextEditor);
       }
@@ -118,5 +76,3 @@ export const activate = (context: vscode.ExtensionContext) => {
 };
 
 export function deactivate(): void {}
-
-export { ActiveFile, executeTestCommand };

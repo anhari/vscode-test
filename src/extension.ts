@@ -1,5 +1,7 @@
 import * as vscode from "vscode";
 
+const TERMINAL_NAME = "Test Runner";
+
 export const activate = (context: vscode.ExtensionContext) => {
   var lastTest: string;
 
@@ -11,11 +13,12 @@ export const activate = (context: vscode.ExtensionContext) => {
         | undefined = vscode.workspace
         .getConfiguration("vscode-test")
         .get("runAllTestsCommand");
+      vscode.window.activeTextEditor?.document.save();
       if (runAllTestsCommand) {
         const existingTerminals = vscode.window.terminals;
         const terminal =
-          existingTerminals.find((term) => term.name === "Test Runner") ||
-          vscode.window.createTerminal("Test Runner");
+          existingTerminals.find((term) => term.name === TERMINAL_NAME) ||
+          vscode.window.createTerminal(TERMINAL_NAME);
         vscode.commands
           .executeCommand("workbench.action.terminal.clear")
           .then(() => {
@@ -31,6 +34,7 @@ export const activate = (context: vscode.ExtensionContext) => {
     () => {
       const activeTextEditor = vscode.window.activeTextEditor;
       if (activeTextEditor) {
+        activeTextEditor.document.save();
         const currentFileName = activeTextEditor.document.fileName;
         const currentLanguage = activeTextEditor.document.languageId;
         const currentRelativePath = vscode.workspace.asRelativePath(
@@ -38,8 +42,8 @@ export const activate = (context: vscode.ExtensionContext) => {
         );
         const existingTerminals = vscode.window.terminals;
         const terminal =
-          existingTerminals.find((term) => term.name === "Test Runner") ||
-          vscode.window.createTerminal("Test Runner");
+          existingTerminals.find((term) => term.name === TERMINAL_NAME) ||
+          vscode.window.createTerminal(TERMINAL_NAME);
         switch (currentLanguage) {
           case "ruby":
             let rubyTest: string;
@@ -76,6 +80,7 @@ export const activate = (context: vscode.ExtensionContext) => {
     () => {
       const activeTextEditor = vscode.window.activeTextEditor;
       if (activeTextEditor) {
+        activeTextEditor.document.save();
         const currentFileName = activeTextEditor.document.fileName;
         const currentLanguage = activeTextEditor.document.languageId;
         const currentLineNumber = activeTextEditor.selection.active.line + 1;
@@ -84,8 +89,8 @@ export const activate = (context: vscode.ExtensionContext) => {
         );
         const existingTerminals = vscode.window.terminals;
         const terminal =
-          existingTerminals.find((term) => term.name === "Test Runner") ||
-          vscode.window.createTerminal("Test Runner");
+          existingTerminals.find((term) => term.name === TERMINAL_NAME) ||
+          vscode.window.createTerminal(TERMINAL_NAME);
         switch (currentLanguage) {
           case "ruby":
             let rubyTest: string;
@@ -124,10 +129,11 @@ export const activate = (context: vscode.ExtensionContext) => {
       const activeTextEditor = vscode.window.activeTextEditor;
 
       if (activeTextEditor && lastTest) {
+        activeTextEditor.document.save();
         const existingTerminals = vscode.window.terminals;
         const terminal =
-          existingTerminals.find((term) => term.name === "Test Runner") ||
-          vscode.window.createTerminal("Test Runner");
+          existingTerminals.find((term) => term.name === TERMINAL_NAME) ||
+          vscode.window.createTerminal(TERMINAL_NAME);
         terminal.show(true);
         vscode.commands
           .executeCommand("workbench.action.terminal.clear")

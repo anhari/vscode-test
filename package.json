@@ -34,7 +34,17 @@
         "command": "vscode-test.runLastTests",
         "title": "Run Last Tests"
       }
-    ]
+    ],
+    "configuration": {
+      "title": "vscode-test configurations",
+      "properties": {
+        "vscode-test.runAllTestsCommand": {
+          "type": "string",
+          "default": "",
+          "description": "Defines a command to run for all tests (i.e. 'bin/rails test', 'mix test'"
+        }
+      }
+    }
   },
   "scripts": {
     "vscode:prepublish": "yarn run compile",

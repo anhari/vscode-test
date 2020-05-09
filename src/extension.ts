@@ -5,8 +5,27 @@ export const activate = (context: vscode.ExtensionContext) => {
 
   let runAllTests = vscode.commands.registerCommand(
     "vscode-test.runAllTests",
-    () => {}
+    () => {
+      const runAllTestsCommand:
+        | string
+        | undefined = vscode.workspace
+        .getConfiguration("vscode-test")
+        .get("runAllTestsCommand");
+      if (runAllTestsCommand) {
+        const existingTerminals = vscode.window.terminals;
+        const terminal =
+          existingTerminals.find((term) => term.name === "Test Runner") ||
+          vscode.window.createTerminal("Test Runner");
+        vscode.commands
+          .executeCommand("workbench.action.terminal.clear")
+          .then(() => {
+            terminal.sendText(runAllTestsCommand, true);
+            lastTest = runAllTestsCommand;
+          });
+      }
+    }
   );
+
   let runFileTests = vscode.commands.registerCommand(
     "vscode-test.runFileTests",
     () => {
@@ -23,7 +42,12 @@ export const activate = (context: vscode.ExtensionContext) => {
           vscode.window.createTerminal("Test Runner");
         switch (currentLanguage) {
           case "ruby":
-            let rubyTest = `bin/rails test ${currentRelativePath}`;
+            let rubyTest: string;
+            if (currentFileName.match(/_spec.rb$/)) {
+              rubyTest = `bin/rspec ${currentRelativePath}`;
+            } else {
+              rubyTest = `bin/rails test ${currentRelativePath}`;
+            }
             terminal.show(true);
             vscode.commands
               .executeCommand("workbench.action.terminal.clear")
@@ -64,7 +88,12 @@ export const activate = (context: vscode.ExtensionContext) => {
           vscode.window.createTerminal("Test Runner");
         switch (currentLanguage) {
           case "ruby":
-            let rubyTest = `bin/rails test ${currentRelativePath}:${currentLineNumber}`;
+            let rubyTest: string;
+            if (currentFileName.match(/_spec.rb$/)) {
+              rubyTest = `bin/rspec ${currentRelativePath}:${currentLineNumber}`;
+            } else {
+              rubyTest = `bin/rails test ${currentRelativePath}:${currentLineNumber}`;
+            }
             terminal.show(true);
             vscode.commands
               .executeCommand("workbench.action.terminal.clear")
@@ -88,6 +117,7 @@ export const activate = (context: vscode.ExtensionContext) => {
       }
     }
   );
+
   let runLastTests = vscode.commands.registerCommand(
     "vscode-test.runLastTests",
     () => {

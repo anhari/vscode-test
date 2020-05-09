@@ -1,10 +1,21 @@
 import * as vscode from "vscode";
+import { rubyTestRunner } from "./runners/ruby";
+import { elixirTestRunner } from "./runners/elixir";
 
 const TERMINAL_NAME = "Test Runner";
 let lastTest: string;
 
-const activeFile = (activeTextEditor: vscode.TextEditor) => {
+type ActiveFile = {
+  activeTextEditor: vscode.TextEditor;
+  fileName: string;
+  language: string;
+  relativePath: string;
+  lineNumber: number;
+};
+
+const activeFile = (activeTextEditor: vscode.TextEditor): ActiveFile => {
   return {
+    activeTextEditor,
     fileName: activeTextEditor.document.fileName,
     language: activeTextEditor.document.languageId,
     relativePath: vscode.workspace.asRelativePath(
@@ -58,23 +69,11 @@ export const activate = (context: vscode.ExtensionContext) => {
         const file = activeFile(activeTextEditor);
         switch (file.language) {
           case "ruby":
-            if (file.fileName.match(/_spec.rb$/)) {
-              executeTestCommand(
-                `bin/rspec ${file.relativePath}`,
-                activeTextEditor
-              );
-            } else {
-              executeTestCommand(
-                `bin/rails test ${file.relativePath}`,
-                activeTextEditor
-              );
-            }
+            rubyTestRunner(file, "file");
             break;
           case "elixir":
-            executeTestCommand(
-              `mix test ${file.relativePath}`,
-              activeTextEditor
-            );
+            elixirTestRunner(file, "file");
+            break;
           default:
             break;
         }
@@ -89,23 +88,11 @@ export const activate = (context: vscode.ExtensionContext) => {
         const file = activeFile(activeTextEditor);
         switch (file.language) {
           case "ruby":
-            if (file.fileName.match(/_spec.rb$/)) {
-              executeTestCommand(
-                `bin/rspec ${file.relativePath}:${file.lineNumber}`,
-                activeTextEditor
-              );
-            } else {
-              executeTestCommand(
-                `bin/rails test ${file.relativePath}:${file.lineNumber}`,
-                activeTextEditor
-              );
-            }
+            rubyTestRunner(file, "line");
             break;
           case "elixir":
-            executeTestCommand(
-              `mix test ${file.relativePath}:${file.lineNumber}`,
-              activeTextEditor
-            );
+            elixirTestRunner(file, "line");
+            break;
           default:
             break;
         }
@@ -131,3 +118,5 @@ export const activate = (context: vscode.ExtensionContext) => {
 };
 
 export function deactivate(): void {}
+
+export { ActiveFile, executeTestCommand };

@@ -26,6 +26,8 @@ This extension contributes the following settings:
 - `vscode-test.elixirTestDirectory`: Defines a directory for elixir tests (default: `test`).
 - `vscode-test.elixirTestPattern`: Defines the file name pattern for elixir test files (default: `_test.exs`).
 
+You can specify any test settings that might be specific for a given project by defining these settings in `~your_project_root/.vscode/settings.json`.
+
 ## Known Issues
 
 VS Code [doesn't seem to support waiting for a terminal to be successfully

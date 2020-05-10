@@ -24,11 +24,11 @@
       },
       {
         "command": "vscode-test.runFileTests",
-        "title": "Run Tests for File"
+        "title": "Run File Tests"
       },
       {
         "command": "vscode-test.runLineTests",
-        "title": "Run Tests for Current Line"
+        "title": "Run Current Line Test"
       },
       {
         "command": "vscode-test.runLastTests",

@@ -7,6 +7,7 @@ import {
   lastTest,
   getActiveTextEditor,
   getConfigurationSetting,
+  displayErrorMessage,
 } from "./vscode_utils";
 
 export const activate = (context: vscode.ExtensionContext) => {
@@ -35,7 +36,7 @@ export const activate = (context: vscode.ExtensionContext) => {
             elixirTestRunner(file, "file");
             break;
           default:
-            vscode.window.showErrorMessage(
+            displayErrorMessage(
               `${file.language} is unsupported by vscode-test.`
             );
             break;
@@ -56,7 +57,7 @@ export const activate = (context: vscode.ExtensionContext) => {
             elixirTestRunner(file, "line");
             break;
           default:
-            vscode.window.showErrorMessage(
+            displayErrorMessage(
               `${file.language} is unsupported by vscode-test.`
             );
             break;

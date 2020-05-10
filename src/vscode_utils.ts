@@ -51,9 +51,14 @@ const executeTestCommand = (
   });
 };
 
+const displayErrorMessage = (message: string) => {
+  vscode.window.showErrorMessage(message);
+};
+
 export {
   ActiveFile,
   activeFile,
+  displayErrorMessage,
   findOrCreateTerminal,
   getActiveTextEditor,
   getConfigurationSetting,

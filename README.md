@@ -9,7 +9,7 @@ Goal: run tests for any language using a plug and play system.
 - [x] Elixir
 - [ ] JavaScript
 - [ ] Python
-- [x] Ruby
+- [x] Ruby (defaults to MiniTest with Rails, [can be configured with RSpec])
 
 ## Extension Settings
 
@@ -35,3 +35,5 @@ text](https://github.com/microsoft/vscode/issues/11383).
 ## Release Notes
 
 TBD.
+
+[can be configured with RSpec]: https://github.com/anhari/vscode-test/wiki/Configure-the-ruby-test-runner-to-use-RSpec

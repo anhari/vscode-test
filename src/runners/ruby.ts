@@ -18,7 +18,11 @@ const rubyTestRunner = (file: ActiveFile, scope: "file" | "line"): void => {
   if (file.relativePath.match(RegExp(`^${rubyTestDirectory}`))) {
     path = file.relativePath;
   } else {
-    path = `${rubyTestDirectory}/${file.relativePath}`;
+    if (file.relativePath.match(/^lib/)) {
+      path = `${rubyTestDirectory}/${file.relativePath}`;
+    } else {
+      path = file.relativePath.replace(/^[^\/]*/, rubyTestDirectory);
+    }
     if (!path.match(RegExp(rubyTestPattern))) {
       path = path.replace(".rb", rubyTestPattern);
     }

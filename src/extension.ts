@@ -11,11 +11,10 @@ import {
 } from "./vscode_utils";
 
 export const activate = (context: vscode.ExtensionContext) => {
-  const activeTextEditor = getActiveTextEditor();
-
   let runAllTests = vscode.commands.registerCommand(
     "vscode-test.runAllTests",
     () => {
+      const activeTextEditor = getActiveTextEditor();
       const runAllTestsCommand = getConfigurationSetting("runAllTestsCommand");
       if (runAllTestsCommand) {
         executeTestCommand(runAllTestsCommand, activeTextEditor);
@@ -26,6 +25,7 @@ export const activate = (context: vscode.ExtensionContext) => {
   let runFileTests = vscode.commands.registerCommand(
     "vscode-test.runFileTests",
     () => {
+      const activeTextEditor = getActiveTextEditor();
       if (activeTextEditor) {
         const file = activeFile(activeTextEditor);
         switch (file.language) {
@@ -47,6 +47,7 @@ export const activate = (context: vscode.ExtensionContext) => {
   let runLineTests = vscode.commands.registerCommand(
     "vscode-test.runLineTests",
     () => {
+      const activeTextEditor = getActiveTextEditor();
       if (activeTextEditor) {
         const file = activeFile(activeTextEditor);
         switch (file.language) {
@@ -69,6 +70,7 @@ export const activate = (context: vscode.ExtensionContext) => {
   let runLastTests = vscode.commands.registerCommand(
     "vscode-test.runLastTests",
     () => {
+      const activeTextEditor = getActiveTextEditor();
       if (activeTextEditor && lastTest) {
         executeTestCommand(lastTest, activeTextEditor);
       }

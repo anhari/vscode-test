@@ -6,6 +6,14 @@ import {
 
 const elixirTestRunner = (file: ActiveFile, scope: "file" | "line"): void => {
   let command: string;
+  let path: string;
+
+  if (file.relativePath.match(/^test\//)) {
+    path = file.relativePath;
+  } else {
+    path = file.relativePath.replace(/^[^\/]+/, "test");
+  }
+
   if (scope === "line") {
     command = `${file.relativePath}:${file.lineNumber}`;
   } else {

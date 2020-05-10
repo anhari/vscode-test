@@ -17,7 +17,7 @@ export const activate = (context: vscode.ExtensionContext) => {
     () => {
       const runAllTestsCommand = getConfigurationSetting("runAllTestsCommand");
       if (runAllTestsCommand) {
-        executeTestCommand(runAllTestsCommand, getActiveTextEditor());
+        executeTestCommand(runAllTestsCommand, activeTextEditor);
       }
     }
   );

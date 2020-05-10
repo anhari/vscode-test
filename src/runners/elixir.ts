@@ -6,22 +6,31 @@ import {
 
 const elixirTestRunner = (file: ActiveFile, scope: "file" | "line"): void => {
   let command: string;
-  if (scope === "line") {
-    command = `${file.relativePath}:${file.lineNumber}`;
+  let path: string;
+
+  const elixirTestCommand =
+    getConfigurationSetting("elixirTestCommand") || "mix test";
+  const elixirTestDirectory =
+    getConfigurationSetting("elixirTestDirectory") || "test";
+  const elixirTestPattern =
+    getConfigurationSetting("elixirTestPattern") || "_test.exs";
+
+  if (file.relativePath.match(RegExp(`^${elixirTestDirectory}`))) {
+    path = file.relativePath;
   } else {
-    command = `${file.relativePath}`;
+    path = file.relativePath.replace(/^[^\/]*/, elixirTestDirectory);
+    if (!path.match(RegExp(elixirTestPattern))) {
+      path = path.replace(".ex", elixirTestPattern);
+    }
   }
 
-  const userDefinedTestCommand = getConfigurationSetting("elixirTestCommand");
-
-  if (userDefinedTestCommand) {
-    return executeTestCommand(
-      `${userDefinedTestCommand} ${command}`,
-      file.activeTextEditor
-    );
+  if (scope === "line") {
+    command = `${path}:${file.lineNumber}`;
+  } else {
+    command = `${path}`;
   }
 
-  executeTestCommand(`mix test ${command}`, file.activeTextEditor);
+  executeTestCommand(`${elixirTestCommand} ${command}`, file.activeTextEditor);
 };
 
 export { elixirTestRunner };

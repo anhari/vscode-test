@@ -45,13 +45,33 @@
         },
         "vscode-test.rubyTestCommand": {
           "type": "string",
-          "default": "",
+          "default": "bin/rails test",
           "description": "Defines a test command to use for ruby files."
+        },
+        "vscode-test.rubyTestDirectory": {
+          "type": "string",
+          "default": "test",
+          "description": "Define the directory for ruby tests."
+        },
+        "vscode-test.rubyTestPattern": {
+          "type": "string",
+          "default": "_test.rb",
+          "description": "Define the pattern for ruby test files."
         },
         "vscode-test.elixirTestCommand": {
           "type": "string",
-          "default": "",
+          "default": "mix test",
           "description": "Defines a test command to use for elixir files."
+        },
+        "vscode-test.elixirTestDirectory": {
+          "type": "string",
+          "default": "test",
+          "description": "Define the directory for elixir tests."
+        },
+        "vscode-test.elixirTestPattern": {
+          "type": "string",
+          "default": "_test.exs",
+          "description": "Define the pattern for elixir test files."
         }
       }
     }

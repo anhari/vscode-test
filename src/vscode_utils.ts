@@ -45,6 +45,7 @@ const executeTestCommand = (
   activeTextEditor?.document.save();
   vscode.commands.executeCommand("workbench.action.terminal.clear").then(() => {
     const terminal = findOrCreateTerminal();
+    terminal.show();
     terminal.sendText(command, true);
     lastTest = command;
   });

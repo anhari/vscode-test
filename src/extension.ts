@@ -35,6 +35,9 @@ export const activate = (context: vscode.ExtensionContext) => {
             elixirTestRunner(file, "file");
             break;
           default:
+            vscode.window.showErrorMessage(
+              `${file.language} is unsupported by vscode-test.`
+            );
             break;
         }
       }
@@ -53,6 +56,9 @@ export const activate = (context: vscode.ExtensionContext) => {
             elixirTestRunner(file, "line");
             break;
           default:
+            vscode.window.showErrorMessage(
+              `${file.language} is unsupported by vscode-test.`
+            );
             break;
         }
       }

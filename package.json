@@ -62,6 +62,16 @@
           "type": "string",
           "default": "mix test",
           "description": "Defines a test command to use for elixir files."
+        },
+        "vscode-test.elixirTestDirectory": {
+          "type": "string",
+          "default": "test",
+          "description": "Define the directory for elixir tests."
+        },
+        "vscode-test.elixirTestPattern": {
+          "type": "string",
+          "default": "_test.exs",
+          "description": "Define the pattern for elixir test files."
         }
       }
     }

@@ -8,28 +8,29 @@ const elixirTestRunner = (file: ActiveFile, scope: "file" | "line"): void => {
   let command: string;
   let path: string;
 
-  if (file.relativePath.match(/^test\//)) {
+  const elixirTestCommand =
+    getConfigurationSetting("elixirTestCommand") || "mix test";
+  const elixirTestDirectory =
+    getConfigurationSetting("elixirTestDirectory") || "test";
+  const elixirTestPattern =
+    getConfigurationSetting("elixirTestPattern") || "_test.exs";
+
+  if (file.relativePath.match(RegExp(`^${elixirTestDirectory}`))) {
     path = file.relativePath;
   } else {
-    path = file.relativePath.replace(/^[^\/]+/, "test");
+    path = file.relativePath.replace(/^[^\/]*/, elixirTestDirectory);
+    if (!path.match(RegExp(elixirTestPattern))) {
+      path = path.replace(".ex", elixirTestPattern);
+    }
   }
 
   if (scope === "line") {
-    command = `${file.relativePath}:${file.lineNumber}`;
+    command = `${path}:${file.lineNumber}`;
   } else {
-    command = `${file.relativePath}`;
+    command = `${path}`;
   }
 
-  const userDefinedTestCommand = getConfigurationSetting("elixirTestCommand");
-
-  if (userDefinedTestCommand) {
-    return executeTestCommand(
-      `${userDefinedTestCommand} ${command}`,
-      file.activeTextEditor
-    );
-  }
-
-  executeTestCommand(`mix test ${command}`, file.activeTextEditor);
+  executeTestCommand(`${elixirTestCommand} ${command}`, file.activeTextEditor);
 };
 
 export { elixirTestRunner };

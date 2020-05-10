@@ -1,4 +1,4 @@
-# vscode-test README
+# vscode-test
 
 Goal: run tests for any language using a plug and play system.
 

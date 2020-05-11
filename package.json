@@ -15,6 +15,7 @@
   ],
   "activationEvents": [
     "onCommand:vscode-test.runAllTests",
+    "onCommand:vscode-test.runAllUnitTests",
     "onCommand:vscode-test.runFileTests",
     "onCommand:vscode-test.runLineTests",
     "onCommand:vscode-test.runLastTests"
@@ -25,6 +26,10 @@
       {
         "command": "vscode-test.runAllTests",
         "title": "Run All Tests"
+      },
+      {
+        "command": "vscode-test.runAllUnitTests",
+        "title": "Run All Unit Tests"
       },
       {
         "command": "vscode-test.runFileTests",
@@ -45,7 +50,12 @@
         "vscode-test.runAllTestsCommand": {
           "type": "string",
           "default": "",
-          "description": "Defines a command to run for all tests (i.e. 'bin/rails test', 'mix test'"
+          "description": "Defines a command to run for all tests (i.e. 'bin/rails test:system test', 'mix test')"
+        },
+        "vscode-test.runAllUnitTestsCommand": {
+          "type": "string",
+          "default": "",
+          "description": "Defines a command to run for all unit tests (i.e. 'bin/rails test')"
         },
         "vscode-test.rubyTestCommand": {
           "type": "string",

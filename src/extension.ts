@@ -18,6 +18,27 @@ export const activate = (context: vscode.ExtensionContext) => {
       const runAllTestsCommand = getConfigurationSetting("runAllTestsCommand");
       if (runAllTestsCommand) {
         executeTestCommand(runAllTestsCommand, activeTextEditor);
+      } else {
+        displayErrorMessage(
+          "vscode-test: define a command for running all of your application's tests."
+        );
+      }
+    }
+  );
+
+  let runAllUnitTests = vscode.commands.registerCommand(
+    "vscode-test.runAllUnitTests",
+    () => {
+      const activeTextEditor = getActiveTextEditor();
+      const runAllUnitTestsCommand = getConfigurationSetting(
+        "runAllUnitTestsCommand"
+      );
+      if (runAllUnitTestsCommand) {
+        executeTestCommand(runAllUnitTestsCommand, activeTextEditor);
+      } else {
+        displayErrorMessage(
+          "vscode-test: define a command for running all of your application's unit tests."
+        );
       }
     }
   );
@@ -78,6 +99,7 @@ export const activate = (context: vscode.ExtensionContext) => {
   );
 
   context.subscriptions.push(runAllTests);
+  context.subscriptions.push(runAllUnitTests);
   context.subscriptions.push(runFileTests);
   context.subscriptions.push(runLineTests);
   context.subscriptions.push(runLastTests);

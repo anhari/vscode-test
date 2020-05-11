@@ -3,6 +3,10 @@
   "displayName": "vscode-test",
   "description": "A configurable test-runner for multiple file types.",
   "version": "0.0.1",
+  "publisher": "anhari",
+  "repository": {
+    "url": "https://github.com/anhari/vscode-test"
+  },
   "engines": {
     "vscode": "^1.45.0"
   },

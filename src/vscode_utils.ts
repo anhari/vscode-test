@@ -42,13 +42,18 @@ const executeTestCommand = (
   command: string,
   activeTextEditor: vscode.TextEditor | undefined
 ): void => {
-  activeTextEditor?.document.save();
-  vscode.commands.executeCommand("workbench.action.terminal.clear").then(() => {
-    const terminal = findOrCreateTerminal();
-    terminal.show(true);
-    terminal.sendText(command, true);
-    lastTest = command;
-  });
+  if (activeTextEditor) {
+    activeTextEditor.document.save();
+    vscode.commands
+      .executeCommand("workbench.action.terminal.clear")
+      .then(() => {
+        const terminal = findOrCreateTerminal();
+        terminal.show(true);
+        terminal.sendText(command, true);
+        vscode.window.showTextDocument(activeTextEditor.document);
+        lastTest = command;
+      });
+  }
 };
 
 const displayErrorMessage = (message: string) => {

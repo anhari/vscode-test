@@ -32,7 +32,7 @@ You can specify any test settings that might be specific for a given project by 
 
 VS Code [doesn't seem to support waiting for a terminal to be successfully
 created before tying to send it some
-text](https://github.com/microsoft/vscode/issues/11383).
+text](https://github.com/microsoft/vscode/issues/11383), so you may need to run your first test twice as a result.
 
 ## Release Notes
 

@@ -1,6 +1,6 @@
 # vscode-test
 
-Goal: run tests for any language using a plug and play system.
+Goal: run tests for any language using a plug and play system. Inspired by [vim-test](https://github.com/vim-test/vim-test).
 
 ## Features
 

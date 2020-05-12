@@ -5,6 +5,7 @@ const TERMINAL_NAME = "Test Runner";
 
 type ActiveFile = {
   activeTextEditor: vscode.TextEditor;
+  workspaceRoot: string | undefined;
   fileName: string;
   language: string;
   relativePath: string;
@@ -21,6 +22,7 @@ const getConfigurationSetting = (setting: string): string | undefined => {
 const activeFile = (activeTextEditor: vscode.TextEditor): ActiveFile => {
   return {
     activeTextEditor,
+    workspaceRoot: vscode.workspace.rootPath,
     fileName: activeTextEditor.document.fileName,
     language: activeTextEditor.document.languageId,
     relativePath: vscode.workspace.asRelativePath(
@@ -60,6 +62,15 @@ const displayErrorMessage = (message: string) => {
   vscode.window.showErrorMessage(message);
 };
 
+const openFile = (path: string) => {
+  vscode.workspace.openTextDocument(path).then(
+    (doc) => {
+      vscode.window.showTextDocument(doc);
+    },
+    () => displayErrorMessage(`vscode-test: File could not be found: ${path}`)
+  );
+};
+
 export {
   ActiveFile,
   activeFile,
@@ -69,4 +80,5 @@ export {
   getConfigurationSetting,
   executeTestCommand,
   lastTest,
+  openFile,
 };

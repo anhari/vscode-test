@@ -9,7 +9,18 @@ Goal: run tests for any language using a plug and play system. Inspired by [vim-
 - [x] Elixir
 - [ ] JavaScript
 - [ ] Python
-- [x] Ruby (defaults to MiniTest with Rails, [can be configured with RSpec])
+- [x] Ruby (defaults to MiniTest with Rails, [can be configured with
+      RSpec](https://github.com/anhari/vscode-test/wiki/Configure-the-ruby-test-runner-to-use-RSpec))
+
+### Commands
+
+- `Run All Tests` - run all tests in a workspace (defined by `vscode-test.runAllTestsCommand`).
+- `Run All Unit Tests` - run all unit tests in a workspace (defined by `vscode-test.runAllUnitTestsCommand`).
+- `Run File Tests` - run all tests for the current file.
+- `Run Current Line Test` - run test on the current line.
+- `Run Last Tests` - rerun the last test command.
+- `Open Test File` - jump from a file to its test (i.e. `app/models/user.rb`
+  &rarr; `test/models/user_test.rb`).
 
 ## Extension Settings
 
@@ -37,5 +48,3 @@ text](https://github.com/microsoft/vscode/issues/11383), so you may need to run 
 ## Release Notes
 
 TBD.
-
-[can be configured with RSpec]: https://github.com/anhari/vscode-test/wiki/Configure-the-ruby-test-runner-to-use-RSpec

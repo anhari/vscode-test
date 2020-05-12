@@ -9,6 +9,8 @@ import {
   getConfigurationSetting,
   displayErrorMessage,
 } from "./vscode_utils";
+import { rubyFileOpener } from "./openers/ruby";
+import { elixirFileOpener } from "./openers/elixir";
 
 export const activate = (context: vscode.ExtensionContext) => {
   let runAllTests = vscode.commands.registerCommand(
@@ -98,11 +100,35 @@ export const activate = (context: vscode.ExtensionContext) => {
     }
   );
 
+  let openTestFile = vscode.commands.registerCommand(
+    "vscode-test.openTestFile",
+    () => {
+      const activeTextEditor = getActiveTextEditor();
+      if (activeTextEditor) {
+        const file = activeFile(activeTextEditor);
+        switch (file.language) {
+          case "ruby":
+            rubyFileOpener(file);
+            break;
+          case "elixir":
+            elixirFileOpener(file);
+            break;
+          default:
+            displayErrorMessage(
+              `${file.language} is unsupported by vscode-test.`
+            );
+            break;
+        }
+      }
+    }
+  );
+
   context.subscriptions.push(runAllTests);
   context.subscriptions.push(runAllUnitTests);
   context.subscriptions.push(runFileTests);
   context.subscriptions.push(runLineTests);
   context.subscriptions.push(runLastTests);
+  context.subscriptions.push(openTestFile);
 };
 
 export function deactivate(): void {}

@@ -47,6 +47,10 @@
       {
         "command": "vscode-test.openTestFile",
         "title": "Open Test File"
+      },
+      {
+        "command": "vscode-test.openTestFile",
+        "title": "Open Alternate File"
       }
     ],
     "configuration": {

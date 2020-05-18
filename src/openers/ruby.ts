@@ -9,17 +9,25 @@ const rubyFileOpener = (file: ActiveFile) => {
     getConfigurationSetting("rubyTestPattern") || "_test.rb";
 
   if (file.relativePath.match(RegExp(`^${rubyTestDirectory}`))) {
-    return;
-  }
+    if (file.relativePath.match(RegExp(`^${rubyTestDirectory}\/lib`))) {
+      path = file.relativePath.replace(/^[^\/]*/, "");
+    } else {
+      path = file.relativePath.replace(/^[^\/]*/, "app");
+    }
 
-  if (file.relativePath.match(/^lib/)) {
-    path = `${rubyTestDirectory}/${file.relativePath}`;
+    if (path.match(RegExp(rubyTestPattern))) {
+      path = path.replace(rubyTestPattern, ".rb");
+    }
   } else {
-    path = file.relativePath.replace(/^[^\/]*/, rubyTestDirectory);
-  }
+    if (file.relativePath.match(/^lib/)) {
+      path = `${rubyTestDirectory}/${file.relativePath}`;
+    } else {
+      path = file.relativePath.replace(/^[^\/]*/, rubyTestDirectory);
+    }
 
-  if (!path.match(RegExp(rubyTestPattern))) {
-    path = path.replace(".rb", rubyTestPattern);
+    if (!path.match(RegExp(rubyTestPattern))) {
+      path = path.replace(".rb", rubyTestPattern);
+    }
   }
   openFile(`${file.workspaceRoot}/${path}`);
 };

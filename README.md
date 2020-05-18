@@ -20,7 +20,7 @@ Goal: run tests for any language using a plug and play system. Inspired by [vim-
 - `Run Current Line Test` - run test on the current line.
 - `Run Last Tests` - rerun the last test command.
 - `Open Test File (deprecated)` - jump from a file to its test (i.e. `app/models/user.rb`
-- `Open Alternate File (deprecated)` - jump from a file to its test and vice-versa (i.e. `app/models/user.rb`
+- `Open Alternate File` - jump from a file to its test and vice-versa (i.e. `app/models/user.rb`
   &rarr; `test/models/user_test.rb` and `test/models/user_test.rb` &rarr; `app/models/user.rb`).
 
 ## Extension Settings

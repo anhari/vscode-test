@@ -5,19 +5,20 @@ import {
   pathForRubyTestFile,
 } from "../projections/ruby";
 
-const rubyFileOpener = (file: ActiveFile) => {
-  let path: string;
+const computeRubyPath = (file: ActiveFile): string => {
   const { rubyTestDirectory } = getRubySettings();
 
   if (file.relativePath.match(RegExp(`^${rubyTestDirectory}`))) {
-    path = pathForRubySourceFile(file);
+    return pathForRubySourceFile(file);
   } else {
-    path = pathForRubyTestFile(file);
-  }
-
-  if (file.workspaceRoot) {
-    openFile(`${file.workspaceRoot}/${path}`);
+    return pathForRubyTestFile(file);
   }
 };
 
-export { rubyFileOpener };
+const rubyFileOpener = (file: ActiveFile) => {
+  if (file.workspaceRoot) {
+    openFile(`${file.workspaceRoot}/${computeRubyPath(file)}`);
+  }
+};
+
+export { computeRubyPath, rubyFileOpener };

@@ -4,6 +4,9 @@ const workspace = {
   })),
   workspaceFolders: [],
   onDidSaveTextDocument: jest.fn(),
+  openTextDocument: jest.fn(() => ({
+    then: jest.fn(),
+  })),
 };
 
 const vscode = {

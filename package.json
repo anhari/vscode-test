@@ -46,10 +46,10 @@
       },
       {
         "command": "vscode-test.openTestFile",
-        "title": "Open Test File"
+        "title": "Open Test File (deprecated)"
       },
       {
-        "command": "vscode-test.openTestFile",
+        "command": "vscode-test.openAlternateFile",
         "title": "Open Alternate File"
       }
     ],

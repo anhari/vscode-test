@@ -5,7 +5,7 @@ import {
   pathForElixirTestFile,
 } from "../projections/elixir";
 
-const elixirFileOpener = (file: ActiveFile) => {
+const computeElixirPath = (file: ActiveFile): string => {
   let path: string;
   const { elixirTestDirectory } = getElixirSettings();
 
@@ -14,10 +14,13 @@ const elixirFileOpener = (file: ActiveFile) => {
   } else {
     path = pathForElixirTestFile(file);
   }
+  return path;
+};
 
+const elixirFileOpener = (file: ActiveFile) => {
   if (file.workspaceRoot) {
-    openFile(`${file.workspaceRoot}/${path}`);
+    openFile(`${file.workspaceRoot}/${computeElixirPath(file)}`);
   }
 };
 
-export { elixirFileOpener };
+export { computeElixirPath, elixirFileOpener };

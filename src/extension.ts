@@ -6,18 +6,20 @@ import {
   executeTestCommand,
   lastTest,
   getActiveTextEditor,
-  getConfigurationSetting,
   displayErrorMessage,
+  getConfiguration,
+  getSetting,
 } from "./vscode_utils";
 import { rubyFileOpener } from "./openers/ruby";
 import { elixirFileOpener } from "./openers/elixir";
 
 export const activate = (context: vscode.ExtensionContext) => {
+  let config = getConfiguration();
   let runAllTests = vscode.commands.registerCommand(
     "vscode-test.runAllTests",
     () => {
       const activeTextEditor = getActiveTextEditor();
-      const runAllTestsCommand = getConfigurationSetting("runAllTestsCommand");
+      const runAllTestsCommand = getSetting(config, "runAllTestsCommand");
       if (runAllTestsCommand) {
         executeTestCommand(runAllTestsCommand, activeTextEditor);
       } else {
@@ -32,7 +34,8 @@ export const activate = (context: vscode.ExtensionContext) => {
     "vscode-test.runAllUnitTests",
     () => {
       const activeTextEditor = getActiveTextEditor();
-      const runAllUnitTestsCommand = getConfigurationSetting(
+      const runAllUnitTestsCommand = getSetting(
+        config,
         "runAllUnitTestsCommand"
       );
       if (runAllUnitTestsCommand) {

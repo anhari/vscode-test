@@ -1,36 +1,22 @@
-import { ActiveFile, getConfigurationSetting, openFile } from "../vscode_utils";
-
-const computePath = (relativePath: string, workspaceRoot: string) => {
-  let path: string;
-
-  const elixirTestDirectory =
-    getConfigurationSetting("elixirTestDirectory") || "test";
-  const elixirTestPattern =
-    getConfigurationSetting("elixirTestPattern") || "_test.exs";
-
-  if (relativePath.match(RegExp(`^${elixirTestDirectory}`))) {
-    path = relativePath.replace(elixirTestDirectory, "lib");
-    if (path.match(RegExp(elixirTestPattern))) {
-      path = path.replace(elixirTestPattern, ".ex");
-    }
-  } else {
-    path = relativePath.replace(/^[^\/]*/, elixirTestDirectory);
-    if (!path.match(RegExp(elixirTestPattern))) {
-      path = path.replace(".ex", elixirTestPattern);
-    }
-  }
-
-  return path;
-};
+import { ActiveFile, openFile } from "../vscode_utils";
+import { getElixirSettings } from "../settings/elixir";
+import {
+  pathForElixirSourceFile,
+  pathForElixirTestFile,
+} from "../projections/elixir";
 
 const elixirFileOpener = (file: ActiveFile) => {
+  let path: string;
+  const { elixirTestDirectory } = getElixirSettings();
+
+  if (file.relativePath.match(RegExp(`^${elixirTestDirectory}`))) {
+    path = pathForElixirSourceFile(file);
+  } else {
+    path = pathForElixirTestFile(file);
+  }
+
   if (file.workspaceRoot) {
-    openFile(
-      `${file.workspaceRoot}/${computePath(
-        file.relativePath,
-        file.workspaceRoot
-      )}`
-    );
+    openFile(`${file.workspaceRoot}/${path}`);
   }
 };
 

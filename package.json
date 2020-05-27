@@ -19,6 +19,7 @@
     "onCommand:vscode-test.runFileTests",
     "onCommand:vscode-test.runLineTests",
     "onCommand:vscode-test.runLastTests",
+    "onCommand:vscode-test.openAlternateFile",
     "onCommand:vscode-test.openTestFile"
   ],
   "main": "./out/extension.js",

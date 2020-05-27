@@ -2,7 +2,7 @@
   "name": "vscode-test",
   "displayName": "vscode-test",
   "description": "A configurable test-runner for multiple file types.",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "publisher": "anhari",
   "repository": {
     "url": "https://github.com/anhari/vscode-test"

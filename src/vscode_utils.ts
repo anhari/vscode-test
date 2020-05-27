@@ -4,7 +4,7 @@ let lastTest: string;
 const TERMINAL_NAME = "Test Runner";
 
 type ActiveFile = {
-  activeTextEditor: vscode.TextEditor;
+  activeTextEditor?: vscode.TextEditor;
   workspaceRoot: string | undefined;
   fileName: string;
   language: string;
@@ -15,8 +15,15 @@ type ActiveFile = {
 const getActiveTextEditor = (): vscode.TextEditor | undefined =>
   vscode.window.activeTextEditor;
 
-const getConfigurationSetting = (setting: string): string | undefined => {
-  return vscode.workspace.getConfiguration("vscode-test").get(setting);
+const getConfiguration = (): vscode.WorkspaceConfiguration => {
+  return vscode.workspace.getConfiguration("vscode-test");
+};
+
+const getSetting = (
+  config: vscode.WorkspaceConfiguration,
+  setting: string
+): string | undefined => {
+  return config.get(setting);
 };
 
 const activeFile = (activeTextEditor: vscode.TextEditor): ActiveFile => {
@@ -77,7 +84,8 @@ export {
   displayErrorMessage,
   findOrCreateTerminal,
   getActiveTextEditor,
-  getConfigurationSetting,
+  getConfiguration,
+  getSetting,
   executeTestCommand,
   lastTest,
   openFile,

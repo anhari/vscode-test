@@ -1,20 +1,31 @@
 import {
   ActiveFile,
   executeTestCommand,
-  getConfigurationSetting,
+  getConfiguration,
+  getSetting,
 } from "../vscode_utils";
 
-const rubyTestRunner = (file: ActiveFile, scope: "file" | "line"): void => {
+interface RubySettings {
+  rubyTestCommand: string;
+  rubyTestDirectory: string;
+  rubyTestPattern: string;
+}
+
+const config = getConfiguration();
+
+const rubySettings: RubySettings = {
+  rubyTestCommand: getSetting(config, "rubyTestCommand") || "bin/rails test",
+  rubyTestDirectory: getSetting(config, "rubyTestDirectory") || "test",
+  rubyTestPattern: getSetting(config, "rubyTestPattern") || "_test.rb",
+};
+
+const rubyCommandGenerator = (
+  file: ActiveFile,
+  scope: "file" | "line"
+): string => {
   let command: string;
   let path: string;
-
-  const rubyTestCommand =
-    getConfigurationSetting("rubyTestCommand") || "bin/rails test";
-  const rubyTestDirectory =
-    getConfigurationSetting("rubyTestDirectory") || "test";
-  const rubyTestPattern =
-    getConfigurationSetting("rubyTestPattern") || "_test.rb";
-
+  const { rubyTestCommand, rubyTestDirectory, rubyTestPattern } = rubySettings;
   if (file.relativePath.match(RegExp(`^${rubyTestDirectory}`))) {
     path = file.relativePath;
   } else {
@@ -23,9 +34,7 @@ const rubyTestRunner = (file: ActiveFile, scope: "file" | "line"): void => {
     } else {
       path = file.relativePath.replace(/^[^\/]*/, rubyTestDirectory);
     }
-    if (!path.match(RegExp(rubyTestPattern))) {
-      path = path.replace(".rb", rubyTestPattern);
-    }
+    path = path.replace(".rb", rubyTestPattern);
   }
 
   if (scope === "line") {
@@ -33,8 +42,11 @@ const rubyTestRunner = (file: ActiveFile, scope: "file" | "line"): void => {
   } else {
     command = `${path}`;
   }
-
-  executeTestCommand(`${rubyTestCommand} ${command}`, file.activeTextEditor);
+  return `${rubyTestCommand} ${command}`;
 };
 
-export { rubyTestRunner };
+const rubyTestRunner = (file: ActiveFile, scope: "file" | "line"): void => {
+  executeTestCommand(rubyCommandGenerator(file, scope), file.activeTextEditor);
+};
+
+export { rubyCommandGenerator, rubyTestRunner };

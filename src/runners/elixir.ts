@@ -1,27 +1,42 @@
 import {
   ActiveFile,
   executeTestCommand,
-  getConfigurationSetting,
+  getConfiguration,
+  getSetting,
 } from "../vscode_utils";
 
-const elixirTestRunner = (file: ActiveFile, scope: "file" | "line"): void => {
+interface ElixirSettings {
+  elixirTestCommand: string;
+  elixirTestDirectory: string;
+  elixirTestPattern: string;
+}
+
+const config = getConfiguration();
+
+const elixirSettings: ElixirSettings = {
+  elixirTestCommand: getSetting(config, "elixirTestCommand") || "mix test",
+  elixirTestDirectory: getSetting(config, "elixirTestDirectory") || "test",
+  elixirTestPattern: getSetting(config, "elixirTestPattern") || "_test.exs",
+};
+
+const elixirCommandGenerator = (
+  file: ActiveFile,
+  scope: "file" | "line"
+): string => {
   let command: string;
   let path: string;
-
-  const elixirTestCommand =
-    getConfigurationSetting("elixirTestCommand") || "mix test";
-  const elixirTestDirectory =
-    getConfigurationSetting("elixirTestDirectory") || "test";
-  const elixirTestPattern =
-    getConfigurationSetting("elixirTestPattern") || "_test.exs";
+  const {
+    elixirTestCommand,
+    elixirTestDirectory,
+    elixirTestPattern,
+  } = elixirSettings;
 
   if (file.relativePath.match(RegExp(`^${elixirTestDirectory}`))) {
     path = file.relativePath;
   } else {
-    path = file.relativePath.replace(/^[^\/]*/, elixirTestDirectory);
-    if (!path.match(RegExp(elixirTestPattern))) {
-      path = path.replace(".ex", elixirTestPattern);
-    }
+    path = file.relativePath
+      .replace(/^[^\/]*/, elixirTestDirectory)
+      .replace(".ex", elixirTestPattern);
   }
 
   if (scope === "line") {
@@ -30,7 +45,14 @@ const elixirTestRunner = (file: ActiveFile, scope: "file" | "line"): void => {
     command = `${path}`;
   }
 
-  executeTestCommand(`${elixirTestCommand} ${command}`, file.activeTextEditor);
+  return `${elixirTestCommand} ${command}`;
 };
 
-export { elixirTestRunner };
+const elixirTestRunner = (file: ActiveFile, scope: "file" | "line"): void => {
+  executeTestCommand(
+    elixirCommandGenerator(file, scope),
+    file.activeTextEditor
+  );
+};
+
+export { elixirCommandGenerator, elixirTestRunner };

@@ -1,40 +1,24 @@
 import {
   ActiveFile,
   executeTestCommand,
-  getConfigurationSetting,
+  getConfiguration,
+  getSetting,
 } from "../vscode_utils";
+import { fileOrLineCommand } from "./utils";
+import { getRubySettings } from "../settings/ruby";
+import { computeRubyTestPath } from "../projections/ruby";
 
-const rubyTestRunner = (file: ActiveFile, scope: "file" | "line"): void => {
-  let command: string;
-  let path: string;
-
-  const rubyTestCommand =
-    getConfigurationSetting("rubyTestCommand") || "bin/rails test";
-  const rubyTestDirectory =
-    getConfigurationSetting("rubyTestDirectory") || "test";
-  const rubyTestPattern =
-    getConfigurationSetting("rubyTestPattern") || "_test.rb";
-
-  if (file.relativePath.match(RegExp(`^${rubyTestDirectory}`))) {
-    path = file.relativePath;
-  } else {
-    if (file.relativePath.match(/^lib/)) {
-      path = `${rubyTestDirectory}/${file.relativePath}`;
-    } else {
-      path = file.relativePath.replace(/^[^\/]*/, rubyTestDirectory);
-    }
-    if (!path.match(RegExp(rubyTestPattern))) {
-      path = path.replace(".rb", rubyTestPattern);
-    }
-  }
-
-  if (scope === "line") {
-    command = `${path}:${file.lineNumber}`;
-  } else {
-    command = `${path}`;
-  }
-
-  executeTestCommand(`${rubyTestCommand} ${command}`, file.activeTextEditor);
+const rubyCommandGenerator = (
+  file: ActiveFile,
+  scope: "file" | "line"
+): string => {
+  const { rubyTestCommand } = getRubySettings();
+  const testPath = computeRubyTestPath(file);
+  return `${rubyTestCommand} ${fileOrLineCommand(testPath, file, scope)}`;
 };
 
-export { rubyTestRunner };
+const rubyTestRunner = (file: ActiveFile, scope: "file" | "line"): void => {
+  executeTestCommand(rubyCommandGenerator(file, scope), file.activeTextEditor);
+};
+
+export { rubyCommandGenerator, rubyTestRunner };

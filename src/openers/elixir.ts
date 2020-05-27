@@ -1,23 +1,26 @@
-import { ActiveFile, getConfigurationSetting, openFile } from "../vscode_utils";
+import { ActiveFile, openFile } from "../vscode_utils";
+import { getElixirSettings } from "../settings/elixir";
+import {
+  pathForElixirSourceFile,
+  pathForElixirTestFile,
+} from "../projections/elixir";
 
-const elixirFileOpener = (file: ActiveFile) => {
+const computeElixirPath = (file: ActiveFile): string => {
   let path: string;
-
-  const elixirTestDirectory =
-    getConfigurationSetting("elixirTestDirectory") || "test";
-  const elixirTestPattern =
-    getConfigurationSetting("elixirTestPattern") || "_test.exs";
+  const { elixirTestDirectory } = getElixirSettings();
 
   if (file.relativePath.match(RegExp(`^${elixirTestDirectory}`))) {
-    path = file.relativePath;
+    path = pathForElixirSourceFile(file);
   } else {
-    path = file.relativePath.replace(/^[^\/]*/, elixirTestDirectory);
-    if (!path.match(RegExp(elixirTestPattern))) {
-      path = path.replace(".ex", elixirTestPattern);
-    }
+    path = pathForElixirTestFile(file);
   }
-
-  openFile(`${file.workspaceRoot}/${path}`);
+  return path;
 };
 
-export { elixirFileOpener };
+const elixirFileOpener = (file: ActiveFile) => {
+  if (file.workspaceRoot) {
+    openFile(`${file.workspaceRoot}/${computeElixirPath(file)}`);
+  }
+};
+
+export { computeElixirPath, elixirFileOpener };

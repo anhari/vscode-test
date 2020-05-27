@@ -1,27 +1,24 @@
-import { ActiveFile, getConfigurationSetting, openFile } from "../vscode_utils";
+import { ActiveFile, openFile } from "../vscode_utils";
+import { getRubySettings } from "../settings/ruby";
+import {
+  pathForRubySourceFile,
+  pathForRubyTestFile,
+} from "../projections/ruby";
 
-const rubyFileOpener = (file: ActiveFile) => {
-  let path: string;
-
-  const rubyTestDirectory =
-    getConfigurationSetting("rubyTestDirectory") || "test";
-  const rubyTestPattern =
-    getConfigurationSetting("rubyTestPattern") || "_test.rb";
+const computeRubyPath = (file: ActiveFile): string => {
+  const { rubyTestDirectory } = getRubySettings();
 
   if (file.relativePath.match(RegExp(`^${rubyTestDirectory}`))) {
-    return;
-  }
-
-  if (file.relativePath.match(/^lib/)) {
-    path = `${rubyTestDirectory}/${file.relativePath}`;
+    return pathForRubySourceFile(file);
   } else {
-    path = file.relativePath.replace(/^[^\/]*/, rubyTestDirectory);
+    return pathForRubyTestFile(file);
   }
-
-  if (!path.match(RegExp(rubyTestPattern))) {
-    path = path.replace(".rb", rubyTestPattern);
-  }
-  openFile(`${file.workspaceRoot}/${path}`);
 };
 
-export { rubyFileOpener };
+const rubyFileOpener = (file: ActiveFile) => {
+  if (file.workspaceRoot) {
+    openFile(`${file.workspaceRoot}/${computeRubyPath(file)}`);
+  }
+};
+
+export { computeRubyPath, rubyFileOpener };

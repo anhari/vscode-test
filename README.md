@@ -9,8 +9,7 @@ Goal: run tests for any language using a plug and play system. Inspired by [vim-
 - [x] Elixir
 - [ ] JavaScript
 - [ ] Python
-- [x] Ruby (defaults to MiniTest with Rails, [can be configured with
-      RSpec](https://github.com/anhari/vscode-test/wiki/Configure-the-ruby-test-runner-to-use-RSpec))
+- [x] Ruby (defaults to MiniTest with Rails, [can be configured with RSpec](https://github.com/anhari/vscode-test/wiki/Configure-the-ruby-test-runner-to-use-RSpec))
 
 ### Commands
 
@@ -19,14 +18,11 @@ Goal: run tests for any language using a plug and play system. Inspired by [vim-
 - `Run File Tests` - run all tests for the current file.
 - `Run Current Line Test` - run test on the current line.
 - `Run Last Tests` - rerun the last test command.
-- `Open Test File` - jump from a file to its test (i.e. `app/models/user.rb`
-  &rarr; `test/models/user_test.rb`).
+- `Open Test File (deprecated)` - jump from a file to its test (i.e. `app/models/user.rb`
+- `Open Alternate File` - jump from a file to its test and vice-versa (i.e. `app/models/user.rb`
+  &rarr; `test/models/user_test.rb` and `test/models/user_test.rb` &rarr; `app/models/user.rb`).
 
 ## Extension Settings
-
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
-
-For example:
 
 This extension contributes the following settings:
 

@@ -23,7 +23,7 @@ Goal: run tests for any language using a plug and play system. Inspired by [vim-
 
 This extension contributes the following settings:
 
-- `vscode-test.maximizeTerminal`: Maximize the test runner terminal when a command is run (default: `false`).
+- `vscode-test.maximizeTerminal`: Maximizes the test runner terminal when a command is run (default: `false`).
 - `vscode-test.rubyTestCommand`: Defines a command to use for ruby files (default: `bin/rails test`).
 - `vscode-test.rubyTestDirectory`: Defines a directory for ruby tests (default: `test`).
 - `vscode-test.rubyTestPattern`: Defines the file name pattern for ruby test files (default: `_test.rb`).

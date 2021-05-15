@@ -1,4 +1,5 @@
 import * as vscode from "vscode";
+import { getGlobalSettings } from "./settings/global";
 
 let lastTest: string;
 const TERMINAL_NAME = "Test Runner";
@@ -23,6 +24,13 @@ const getSetting = (
   config: vscode.WorkspaceConfiguration,
   setting: string
 ): string | undefined => {
+  return config.get(setting);
+};
+
+const getBooleanSetting = (
+  config: vscode.WorkspaceConfiguration,
+  setting: string
+): boolean | undefined => {
   return config.get(setting);
 };
 
@@ -52,12 +60,18 @@ const executeTestCommand = (
   activeTextEditor: vscode.TextEditor | undefined
 ): void => {
   if (activeTextEditor) {
+    const maximizeTerminal = getGlobalSettings().maximizeTerminal;
     activeTextEditor.document.save();
     vscode.commands
       .executeCommand("workbench.action.terminal.clear")
       .then(() => {
         const terminal = findOrCreateTerminal();
         terminal.show(true);
+        if (maximizeTerminal) {
+          vscode.commands.executeCommand(
+            "workbench.action.toggleMaximizedPanel"
+          );
+        }
         terminal.sendText(command, true);
         vscode.window.showTextDocument(activeTextEditor.document);
         lastTest = command;
@@ -85,6 +99,7 @@ export {
   findOrCreateTerminal,
   getActiveTextEditor,
   getConfiguration,
+  getBooleanSetting,
   getSetting,
   executeTestCommand,
   lastTest,

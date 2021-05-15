@@ -20,8 +20,7 @@
     "onCommand:vscode-test.runFileTests",
     "onCommand:vscode-test.runLineTests",
     "onCommand:vscode-test.runLastTests",
-    "onCommand:vscode-test.openAlternateFile",
-    "onCommand:vscode-test.openTestFile"
+    "onCommand:vscode-test.openAlternateFile"
   ],
   "main": "./out/extension.js",
   "contributes": {
@@ -45,10 +44,6 @@
       {
         "command": "vscode-test.runLastTests",
         "title": "Run Last Tests"
-      },
-      {
-        "command": "vscode-test.openTestFile",
-        "title": "Open Test File (deprecated)"
       },
       {
         "command": "vscode-test.openAlternateFile",

@@ -126,22 +126,11 @@ export const activate = (context: vscode.ExtensionContext) => {
     }
   );
 
-  let openTestFile = vscode.commands.registerCommand(
-    "vscode-test.openTestFile",
-    () => {
-      vscode.commands.executeCommand("vscode-test.openAlternateFile");
-      displayErrorMessage(
-        `vscode-test: vscode-test.openTestFile is deprecated and has been replace with vscode-test.openAlternateFile, which enables bouncing between test and source files.`
-      );
-    }
-  );
-
   context.subscriptions.push(runAllTests);
   context.subscriptions.push(runAllUnitTests);
   context.subscriptions.push(runFileTests);
   context.subscriptions.push(runLineTests);
   context.subscriptions.push(runLastTests);
-  context.subscriptions.push(openTestFile);
   context.subscriptions.push(openAlternateFile);
 };
 

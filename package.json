@@ -53,6 +53,11 @@
     "configuration": {
       "title": "vscode-test configurations",
       "properties": {
+        "vscode-test.maximizeTerminal": {
+          "type": "boolean",
+          "default": false,
+          "description": "Maximizes the test runner terminal when a command is run"
+        },
         "vscode-test.runAllTestsCommand": {
           "type": "string",
           "default": "",

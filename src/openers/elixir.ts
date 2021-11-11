@@ -1,4 +1,4 @@
-import { ActiveFile, openFile } from "../vscode_utils";
+import { ActiveFile, openFile, openFileInVerticalSplit } from "../vscode_utils";
 import { getElixirSettings } from "../settings/elixir";
 import {
   pathForElixirSourceFile,
@@ -17,10 +17,16 @@ const computeElixirPath = (file: ActiveFile): string => {
   return path;
 };
 
-const elixirFileOpener = (file: ActiveFile) => {
+const openElixirFile = (file: ActiveFile) => {
   if (file.workspaceRoot) {
     openFile(`${file.workspaceRoot}/${computeElixirPath(file)}`);
   }
 };
 
-export { computeElixirPath, elixirFileOpener };
+const openElixirFileInVerticalSplit = (file: ActiveFile) => {
+  if (file.workspaceRoot) {
+    openFileInVerticalSplit(`${file.workspaceRoot}/${computeElixirPath(file)}`);
+  }
+};
+
+export { computeElixirPath, openElixirFile, openElixirFileInVerticalSplit };

@@ -10,8 +10,11 @@ import {
   getConfiguration,
   getSetting,
 } from "./vscode_utils";
-import { rubyFileOpener } from "./openers/ruby";
-import { elixirFileOpener } from "./openers/elixir";
+import { openRubyFile, openRubyFileInVerticalSplit } from "./openers/ruby";
+import {
+  openElixirFile,
+  openElixirFileInVerticalSplit,
+} from "./openers/elixir";
 
 export const activate = (context: vscode.ExtensionContext) => {
   let config = getConfiguration();
@@ -111,10 +114,33 @@ export const activate = (context: vscode.ExtensionContext) => {
         const file = activeFile(activeTextEditor);
         switch (file.language) {
           case "ruby":
-            rubyFileOpener(file);
+            openRubyFile(file);
             break;
           case "elixir":
-            elixirFileOpener(file);
+            openElixirFile(file);
+            break;
+          default:
+            displayErrorMessage(
+              `${file.language} is unsupported by vscode-test.`
+            );
+            break;
+        }
+      }
+    }
+  );
+
+  let openAlternateFileInVerticalSplit = vscode.commands.registerCommand(
+    "vscode-test.openAlternateFileInVerticalSplit",
+    () => {
+      const activeTextEditor = getActiveTextEditor();
+      if (activeTextEditor) {
+        const file = activeFile(activeTextEditor);
+        switch (file.language) {
+          case "ruby":
+            openRubyFileInVerticalSplit(file);
+            break;
+          case "elixir":
+            openElixirFileInVerticalSplit(file);
             break;
           default:
             displayErrorMessage(

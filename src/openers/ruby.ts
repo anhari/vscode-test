@@ -1,4 +1,4 @@
-import { ActiveFile, openFile } from "../vscode_utils";
+import { ActiveFile, openFile, openFileInVerticalSplit } from "../vscode_utils";
 import { getRubySettings } from "../settings/ruby";
 import {
   pathForRubySourceFile,
@@ -15,10 +15,16 @@ const computeRubyPath = (file: ActiveFile): string => {
   }
 };
 
-const rubyFileOpener = (file: ActiveFile) => {
+const openRubyFile = (file: ActiveFile) => {
   if (file.workspaceRoot) {
     openFile(`${file.workspaceRoot}/${computeRubyPath(file)}`);
   }
 };
 
-export { computeRubyPath, rubyFileOpener };
+const openRubyFileInVerticalSplit = (file: ActiveFile) => {
+  if (file.workspaceRoot) {
+    openFileInVerticalSplit(`${file.workspaceRoot}/${computeRubyPath(file)}`);
+  }
+};
+
+export { computeRubyPath, openRubyFile, openRubyFileInVerticalSplit };

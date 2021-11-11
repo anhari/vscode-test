@@ -20,7 +20,8 @@
     "onCommand:vscode-test.runFileTests",
     "onCommand:vscode-test.runLineTests",
     "onCommand:vscode-test.runLastTests",
-    "onCommand:vscode-test.openAlternateFile"
+    "onCommand:vscode-test.openAlternateFile",
+    "onCommand:vscode-test.openAlternateFileInVerticalSplit"
   ],
   "main": "./out/extension.js",
   "contributes": {
@@ -48,6 +49,10 @@
       {
         "command": "vscode-test.openAlternateFile",
         "title": "Open Alternate File"
+      },
+      {
+        "command": "vscode-test.openAlternateFileInVerticalSplit",
+        "title": "Open Alternate File (Vertical Split)"
       }
     ],
     "configuration": {

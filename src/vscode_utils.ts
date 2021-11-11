@@ -92,6 +92,17 @@ const openFile = (path: string) => {
   );
 };
 
+const openFileInVerticalSplit = (path: string) => {
+  vscode.workspace.openTextDocument(path).then(
+    (doc) => {
+      vscode.window.showTextDocument(doc, {
+        viewColumn: vscode.ViewColumn.Beside,
+      });
+    },
+    () => displayErrorMessage(`vscode-test: File could not be found: ${path}`)
+  );
+};
+
 export {
   ActiveFile,
   activeFile,
@@ -104,4 +115,5 @@ export {
   executeTestCommand,
   lastTest,
   openFile,
+  openFileInVerticalSplit,
 };

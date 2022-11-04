@@ -83,6 +83,11 @@
           "default": "test",
           "description": "Define the directory for ruby tests."
         },
+        "vscode-test.rubyTestDirectoryLocal": {
+          "type": "string",
+          "default": "test",
+          "description": "If you run your tests e.g. in a docker environment, you may specify an alternative path for opening the file in the editor. Defaults to `vscode-test.rubyTestDirectory`."
+        },
         "vscode-test.rubyTestPattern": {
           "type": "string",
           "default": "_test.rb",
@@ -98,10 +103,35 @@
           "default": "test",
           "description": "Define the directory for elixir tests."
         },
+        "vscode-test.elixirTestDirectoryLocal": {
+          "type": "string",
+          "default": "test",
+          "description": "If you run your tests e.g. in a docker environment, you may specify an alternative path for opening the file in the editor. Defaults to `vscode-test.elixirTestDirectory`."
+        },
         "vscode-test.elixirTestPattern": {
           "type": "string",
           "default": "_test.exs",
           "description": "Define the pattern for elixir test files."
+        },
+        "vscode-test.typescriptTestCommand": {
+          "type": "string",
+          "default": "npx mocha -r ./node_modules/ts-node/register -S --exit",
+          "description": "Defines a test command to use for typescript files."
+        },
+        "vscode-test.typescriptTestDirectory": {
+          "type": "string",
+          "default": "test",
+          "description": "Define the directory for typescript tests."
+        },
+        "vscode-test.typescriptTestDirectoryLocal": {
+          "type": "string",
+          "default": "test",
+          "description": "If you run your tests e.g. in a docker environment, you may specify an alternative path for opening the file in the editor. Defaults to `vscode-test.typescriptTestDirectory`."
+        },
+        "vscode-test.typescriptTestPattern": {
+          "type": "string",
+          "default": "test.ts",
+          "description": "Define the pattern for typescript test files."
         }
       }
     }
@@ -110,7 +140,8 @@
     "Test Runners",
     "RSpec",
     "MiniTest",
-    "Elixir"
+    "Elixir",
+    "typescript"
   ],
   "scripts": {
     "vscode:prepublish": "yarn run compile",

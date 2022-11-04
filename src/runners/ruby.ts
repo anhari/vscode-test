@@ -1,24 +1,30 @@
 import {
   ActiveFile,
   executeTestCommand,
-  getConfiguration,
-  getSetting,
 } from "../vscode_utils";
 import { fileOrLineCommand } from "./utils";
-import { getRubySettings } from "../settings/ruby";
-import { computeRubyTestPath } from "../projections/ruby";
+import { SettingsRuby } from "../settings/ruby";
+import { IProjection } from "../projections/IProjection";
+import { IRunner } from "./IRunner";
 
-const rubyCommandGenerator = (
-  file: ActiveFile,
-  scope: "file" | "line"
-): string => {
-  const { rubyTestCommand } = getRubySettings();
-  const testPath = computeRubyTestPath(file);
-  return `${rubyTestCommand} ${fileOrLineCommand(testPath, file, scope)}`;
-};
+export class RunnerRuby implements IRunner {
+  constructor(
+    private projection: IProjection,
+  ) {}
 
-const rubyTestRunner = (file: ActiveFile, scope: "file" | "line"): void => {
-  executeTestCommand(rubyCommandGenerator(file, scope), file.activeTextEditor);
-};
+  public commandGenerator(
+    file: ActiveFile,
+    scope: "file" | "line"
+  ): string {
+    const { testCommand } = new SettingsRuby();
+    const testPath = this.projection.computeTestPath(file);
+    return `${testCommand} ${fileOrLineCommand(testPath, file, scope)}`;
+  }
 
-export { rubyCommandGenerator, rubyTestRunner };
+  public testRunner(
+    file: ActiveFile, 
+    scope: "file" | "line"
+  ): void {
+    executeTestCommand(this.commandGenerator(file, scope), file.activeTextEditor);
+  }
+}

@@ -1,6 +1,4 @@
 import * as vscode from "vscode";
-import { rubyTestRunner } from "./runners/ruby";
-import { elixirTestRunner } from "./runners/elixir";
 import {
   activeFile,
   executeTestCommand,
@@ -10,11 +8,9 @@ import {
   getConfiguration,
   getSetting,
 } from "./vscode_utils";
-import { openRubyFile, openRubyFileInVerticalSplit } from "./openers/ruby";
-import {
-  openElixirFile,
-  openElixirFileInVerticalSplit,
-} from "./openers/elixir";
+import { IOpener } from "./openers/IOpener";
+import { chooseRunner } from "./runners/chooseRunner";
+import { chooseOpener } from "./openers/chooseOpener";
 
 export const activate = (context: vscode.ExtensionContext) => {
   let config = getConfiguration();
@@ -57,18 +53,9 @@ export const activate = (context: vscode.ExtensionContext) => {
       const activeTextEditor = getActiveTextEditor();
       if (activeTextEditor) {
         const file = activeFile(activeTextEditor);
-        switch (file.language) {
-          case "ruby":
-            rubyTestRunner(file, "file");
-            break;
-          case "elixir":
-            elixirTestRunner(file, "file");
-            break;
-          default:
-            displayErrorMessage(
-              `${file.language} is unsupported by vscode-test.`
-            );
-            break;
+        const runner = chooseRunner(file);
+        if (runner) {
+          runner.testRunner(file, 'file');
         }
       }
     }
@@ -79,18 +66,9 @@ export const activate = (context: vscode.ExtensionContext) => {
       const activeTextEditor = getActiveTextEditor();
       if (activeTextEditor) {
         const file = activeFile(activeTextEditor);
-        switch (file.language) {
-          case "ruby":
-            rubyTestRunner(file, "line");
-            break;
-          case "elixir":
-            elixirTestRunner(file, "line");
-            break;
-          default:
-            displayErrorMessage(
-              `${file.language} is unsupported by vscode-test.`
-            );
-            break;
+        const runner = chooseRunner(file);
+        if (runner) {
+          runner.testRunner(file, 'line');
         }
       }
     }
@@ -111,23 +89,15 @@ export const activate = (context: vscode.ExtensionContext) => {
     () => {
       const activeTextEditor = getActiveTextEditor();
       if (activeTextEditor) {
+        let opener: IOpener | undefined = undefined;
         const file = activeFile(activeTextEditor);
-        switch (file.language) {
-          case "ruby":
-            openRubyFile(file);
-            break;
-          case "elixir":
-            openElixirFile(file);
-            break;
-          default:
-            displayErrorMessage(
-              `${file.language} is unsupported by vscode-test.`
-            );
-            break;
+          opener = chooseOpener(file);
+          if (opener) {
+            opener.openFile(file);
+          }
         }
       }
-    }
-  );
+    );
 
   let openAlternateFileInVerticalSplit = vscode.commands.registerCommand(
     "vscode-test.openAlternateFileInVerticalSplit",
@@ -135,19 +105,11 @@ export const activate = (context: vscode.ExtensionContext) => {
       const activeTextEditor = getActiveTextEditor();
       if (activeTextEditor) {
         const file = activeFile(activeTextEditor);
-        switch (file.language) {
-          case "ruby":
-            openRubyFileInVerticalSplit(file);
-            break;
-          case "elixir":
-            openElixirFileInVerticalSplit(file);
-            break;
-          default:
-            displayErrorMessage(
-              `${file.language} is unsupported by vscode-test.`
-            );
-            break;
-        }
+        let opener: IOpener | undefined = undefined;
+        opener = chooseOpener(file);
+          if (opener) {
+            opener.openFileInVerticalSplit(file);
+          }
       }
     }
   );

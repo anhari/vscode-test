@@ -8,6 +8,8 @@ Goal: run tests for any language using a plug and play system. Inspired by [vim-
 
 - [x] Elixir
 - [x] Ruby (defaults to MiniTest with Rails, [can be configured with RSpec](https://github.com/anhari/vscode-test/wiki/Configure-the-ruby-test-runner-to-use-RSpec))
+- [x] TypeScript
+
 
 ### Commands
 

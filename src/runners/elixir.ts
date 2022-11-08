@@ -1,22 +1,33 @@
 import { ActiveFile, executeTestCommand } from "../vscode_utils";
-import { computeElixirTestPath } from "../projections/elixir";
 import { fileOrLineCommand } from "./utils";
-import { getElixirSettings } from "../settings/elixir";
+import { SettingsElixir } from "../settings/elixir";
+import { IRunner } from "./IRunner";
+import { IProjection } from "../projections/IProjection";
 
-const elixirCommandGenerator = (
-  file: ActiveFile,
-  scope: "file" | "line"
-): string => {
-  const { elixirTestCommand } = getElixirSettings();
-  const testPath = computeElixirTestPath(file);
-  return `${elixirTestCommand} ${fileOrLineCommand(testPath, file, scope)}`;
-};
 
-const elixirTestRunner = (file: ActiveFile, scope: "file" | "line"): void => {
-  executeTestCommand(
-    elixirCommandGenerator(file, scope),
-    file.activeTextEditor
-  );
-};
+export class RunnerElixir implements IRunner {
 
-export { elixirCommandGenerator, elixirTestRunner };
+  constructor(
+    private projection: IProjection,
+  ) {}
+
+  public commandGenerator (
+    file: ActiveFile,
+    scope: "file" | "line"
+  ): string {
+    const { testCommand } = new SettingsElixir();
+    const testPath = this.projection.computeTestPath(file);
+    return `${testCommand} ${fileOrLineCommand(testPath, file, scope)}`;
+  }
+
+  public testRunner (
+    file: ActiveFile,
+    scope: "file" | "line"
+  ): void  {
+    executeTestCommand(
+      this.commandGenerator(file, scope),
+      file.activeTextEditor
+    );
+  }
+
+}

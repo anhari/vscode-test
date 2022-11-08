@@ -1,6 +1,12 @@
-import { rubyCommandGenerator } from "./ruby";
 import { ActiveFile } from "../vscode_utils";
-import * as RubySettings from "../settings/ruby";
+import { SettingsRuby } from "../settings/ruby";
+import { RunnerRuby } from "./ruby";
+import { ISettings } from "../settings/ISettings";
+import { IProjection } from "../projections/IProjection";
+import { ProjectionRuby } from "../projections/ruby";
+
+const settings: ISettings = new SettingsRuby();
+const projection: IProjection = new ProjectionRuby(settings);
 
 describe("rubyCommandGenerator", () => {
   test("generates a command for the corresponding test for a file in lib", () => {
@@ -12,11 +18,10 @@ describe("rubyCommandGenerator", () => {
       relativePath: "lib/dwarfcode/account.rb",
     };
 
-    const command = rubyCommandGenerator(file, "file");
+    const command = new RunnerRuby(projection).commandGenerator(file, "file");
 
-    expect(command).toEqual(
-      "bin/rails test test/lib/dwarfcode/account_test.rb"
-    );
+    expect(command)
+      .toEqual("bin/rails test test/lib/dwarfcode/account_test.rb");
   });
 
   test("generates a command for the corresponding test for a file in app", () => {
@@ -28,9 +33,10 @@ describe("rubyCommandGenerator", () => {
       relativePath: "app/models/user.rb",
     };
 
-    const command = rubyCommandGenerator(file, "file");
+    const command = new RunnerRuby(projection).commandGenerator(file, "file");
 
-    expect(command).toEqual("bin/rails test test/models/user_test.rb");
+    expect(command)
+      .toEqual("bin/rails test test/models/user_test.rb");
   });
 
   test("generates a command for the corresponding test for a given line number", () => {
@@ -42,18 +48,20 @@ describe("rubyCommandGenerator", () => {
       relativePath: "app/models/user.rb",
     };
 
-    const command = rubyCommandGenerator(file, "line");
+    const command = new RunnerRuby(projection).commandGenerator(file, "line");
 
-    expect(command).toEqual("bin/rails test test/models/user_test.rb:8");
+    expect(command)
+      .toEqual("bin/rails test test/models/user_test.rb:8");
   });
 
   describe("rspec", () => {
     beforeEach(() => {
-      jest.spyOn(RubySettings, "getRubySettings").mockImplementation(() => ({
-        rubyTestCommand: "bin/rspec",
-        rubyTestDirectory: "spec",
-        rubyTestPattern: "_spec.rb",
-      }));
+      let settingsRuby: ISettings = {
+        testCommand: "bin/rspec",
+        testDirectory: "spec",
+        testDirectoryLocal: "spec",
+        testPattern: "_spec.rb",
+      };
     });
 
     test("generates a command for the corresponding test for a file in lib", () => {
@@ -65,7 +73,7 @@ describe("rubyCommandGenerator", () => {
         relativePath: "lib/dwarfcode/account.rb",
       };
 
-      const command = rubyCommandGenerator(file, "file");
+      const command = new RunnerRuby(projection).commandGenerator(file, "file");
 
       expect(command).toEqual("bin/rspec spec/lib/dwarfcode/account_spec.rb");
     });
@@ -79,7 +87,7 @@ describe("rubyCommandGenerator", () => {
         relativePath: "app/models/user.rb",
       };
 
-      const command = rubyCommandGenerator(file, "file");
+      const command = new RunnerRuby(projection).commandGenerator(file, "file");
 
       expect(command).toEqual("bin/rspec spec/models/user_spec.rb");
     });
@@ -93,7 +101,7 @@ describe("rubyCommandGenerator", () => {
         relativePath: "app/models/user.rb",
       };
 
-      const command = rubyCommandGenerator(file, "line");
+      const command = new RunnerRuby(projection).commandGenerator(file, "line");
 
       expect(command).toEqual("bin/rspec spec/models/user_spec.rb:8");
     });

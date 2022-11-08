@@ -1,6 +1,10 @@
-import { computeRubyPath } from "./ruby";
+import { ProjectionRuby } from "../projections/ruby";
+import { SettingsRuby } from "../settings/ruby";
 import { ActiveFile } from "../vscode_utils";
-import * as RubySettings from "../settings/ruby";
+import { OpenerRuby } from "./ruby";
+
+const settings = new SettingsRuby();
+const projection = new ProjectionRuby(settings);
 
 describe("computeRubyPath", () => {
   it("opens the test file when viewing the source", () => {
@@ -12,7 +16,8 @@ describe("computeRubyPath", () => {
       relativePath: "app/models/user.rb",
     };
 
-    expect(computeRubyPath(file)).toEqual("test/models/user_test.rb");
+    expect(new OpenerRuby(settings, projection).computePathLocal(file))
+      .toEqual("test/models/user_test.rb");
   });
 
   it("opens the source file when viewing the test", () => {
@@ -24,39 +29,35 @@ describe("computeRubyPath", () => {
       relativePath: "test/models/user_test.rb",
     };
 
-    expect(computeRubyPath(file)).toEqual("app/models/user.rb");
+    expect(new OpenerRuby(settings, projection).computePathLocal(file))
+      .toEqual("app/models/user.rb");
+  });
+});
+
+describe("rspec", () => {
+  it("opens the spec file when viewing the source", () => {
+    const file: ActiveFile = {
+      fileName: "app/models/user.rb",
+      language: "ruby",
+      lineNumber: 0,
+      workspaceRoot: "~/dev/dwarfcode",
+      relativePath: "app/models/user.rb",
+    };
+
+    expect(new OpenerRuby(settings, projection).computePathLocal(file))
+      .toEqual("spec/models/user_spec.rb");
   });
 
-  describe("rspec", () => {
-    beforeEach(() => {
-      jest.spyOn(RubySettings, "getRubySettings").mockImplementation(() => ({
-        rubyTestCommand: "bin/rspec",
-        rubyTestDirectory: "spec",
-        rubyTestPattern: "_spec.rb",
-      }));
-    });
-    it("opens the spec file when viewing the source", () => {
-      const file: ActiveFile = {
-        fileName: "app/models/user.rb",
-        language: "ruby",
-        lineNumber: 0,
-        workspaceRoot: "~/dev/dwarfcode",
-        relativePath: "app/models/user.rb",
-      };
+  it("opens the source file when viewing the test", () => {
+    const file: ActiveFile = {
+      fileName: "spec/models/user_spec.rb",
+      language: "ruby",
+      lineNumber: 0,
+      workspaceRoot: "~/dev/dwarfcode",
+      relativePath: "spec/models/user_spec.rb",
+    };
 
-      expect(computeRubyPath(file)).toEqual("spec/models/user_spec.rb");
-    });
-
-    it("opens the source file when viewing the test", () => {
-      const file: ActiveFile = {
-        fileName: "spec/models/user_spec.rb",
-        language: "ruby",
-        lineNumber: 0,
-        workspaceRoot: "~/dev/dwarfcode",
-        relativePath: "spec/models/user_spec.rb",
-      };
-
-      expect(computeRubyPath(file)).toEqual("app/models/user.rb");
-    });
+    expect(new OpenerRuby(settings, projection).computePathLocal(file))
+      .toEqual("app/models/user.rb");
   });
 });

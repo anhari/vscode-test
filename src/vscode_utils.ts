@@ -50,8 +50,8 @@ const activeFile = (activeTextEditor: vscode.TextEditor): ActiveFile => {
 const findOrCreateTerminal = (): vscode.Terminal => {
   const existingTerminals = vscode.window.terminals;
   return (
-    existingTerminals.find((term) => term.name === TERMINAL_NAME) ||
-    vscode.window.createTerminal(TERMINAL_NAME)
+    existingTerminals.find((term) => term.name === TERMINAL_NAME) 
+      || vscode.window.createTerminal(TERMINAL_NAME)
   );
 };
 

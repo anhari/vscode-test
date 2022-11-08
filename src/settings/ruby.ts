@@ -1,19 +1,25 @@
 import { getConfiguration, getSetting } from "../vscode_utils";
+import { ISettings } from "./ISettings";
 
-type RubySettings = {
-  rubyTestCommand: string;
-  rubyTestDirectory: string;
-  rubyTestPattern: string;
-};
+export class SettingsRuby implements ISettings {
+  public testCommand: string;
 
-const getRubySettings = (): RubySettings => {
-  const config = getConfiguration();
+  public testDirectory: string;
 
-  return {
-    rubyTestCommand: getSetting(config, "rubyTestCommand") || "bin/rails test",
-    rubyTestDirectory: getSetting(config, "rubyTestDirectory") || "test",
-    rubyTestPattern: getSetting(config, "rubyTestPattern") || "_test.rb",
-  };
-};
+  public testDirectoryLocal: string;
+  
+  public testPattern: string;
+  
+  constructor() {
+    const config = getConfiguration();
 
-export { getRubySettings, RubySettings };
+    this.testCommand = getSetting(config, "rubyTestCommand") 
+      || "bin/rails test";
+    this.testDirectory = getSetting(config, "rubyTestDirectory") 
+      || "test";
+    this.testDirectoryLocal = getSetting(config, "rubyTestDirectoryLocal")
+      || this.testDirectory;
+    this.testPattern = getSetting(config, "rubyTestPattern") 
+      || "_test.rb";
+  }
+}

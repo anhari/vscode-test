@@ -1,19 +1,26 @@
 import { getConfiguration, getSetting } from "../vscode_utils";
+import { ISettings } from "./ISettings";
 
-type ElixirSettings = {
-  elixirTestCommand: string;
-  elixirTestDirectory: string;
-  elixirTestPattern: string;
-};
+export class SettingsElixir implements ISettings {
+  public testCommand: string;
 
-const getElixirSettings = (): ElixirSettings => {
-  const config = getConfiguration();
+  public testDirectory: string;
 
-  return {
-    elixirTestCommand: getSetting(config, "elixirTestCommand") || "mix test",
-    elixirTestDirectory: getSetting(config, "elixirTestDirectory") || "test",
-    elixirTestPattern: getSetting(config, "elixirTestPattern") || "_test.exs",
-  };
-};
+  public testPattern: string;
 
-export { getElixirSettings, ElixirSettings };
+  public testDirectoryLocal: string;
+
+  constructor() {
+    const config = getConfiguration();
+
+    this.testCommand = getSetting(config, "elixirTestCommand") 
+      || "mix test";
+    this.testDirectory = getSetting(config, "elixirTestDirectory")
+       || "test";
+    this.testDirectoryLocal = getSetting(config, "elixirTestDirectoryLocal")
+      || this.testDirectory;
+    this.testPattern = getSetting(config, "elixirTestPattern") 
+      || "_test.exs";
+  }
+
+}

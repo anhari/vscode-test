@@ -1,5 +1,11 @@
-import { computeElixirPath } from "./elixir";
+import { ProjectionElixir } from "../projections/elixir";
+import { SettingsElixir } from "../settings/elixir";
 import { ActiveFile } from "../vscode_utils";
+import { OpenerElixir } from "./elixir";
+
+
+const settings = new SettingsElixir();
+const projection = new ProjectionElixir(settings);
 
 describe("computeElixirPath", () => {
   it("opens the test file when viewing the source", () => {
@@ -11,7 +17,8 @@ describe("computeElixirPath", () => {
       relativePath: "lib/dwarfcode/accounts.ex",
     };
 
-    expect(computeElixirPath(file)).toEqual("test/dwarfcode/accounts_test.exs");
+    expect(new OpenerElixir(settings, projection).computePathLocal(file))
+      .toEqual("test/dwarfcode/accounts_test.exs");
   });
 
   it("opens the test file when viewing the source", () => {
@@ -23,6 +30,7 @@ describe("computeElixirPath", () => {
       relativePath: "test/dwarfcode/accounts_test.exs",
     };
 
-    expect(computeElixirPath(file)).toEqual("lib/dwarfcode/accounts.ex");
+    expect(new OpenerElixir(settings, projection).computePathLocal(file))
+      .toEqual("lib/dwarfcode/accounts.ex");
   });
 });

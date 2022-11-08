@@ -1,41 +1,70 @@
 import { ActiveFile } from "../vscode_utils";
-import { getRubySettings } from "../settings/ruby";
+import { IProjection } from "./IProjection";
+import { ISettings } from "../settings/ISettings";
 
-const pathForRubyTestFile = (file: ActiveFile): string => {
-  let path: string;
-  const { rubyTestDirectory, rubyTestPattern } = getRubySettings();
+export class ProjectionRuby implements IProjection {
+  constructor(
+    public settings: ISettings,
+  ) { }
 
-  if (file.relativePath.match(/^lib/)) {
-    path = `${rubyTestDirectory}/${file.relativePath}`;
-  } else {
-    path = file.relativePath.replace(/^[^\/]*/, rubyTestDirectory);
+  public computeTestPathLocal(file: ActiveFile): string {
+    const { testDirectory } = this.settings;
+
+    if (file.relativePath.match(RegExp(`^${testDirectory}`))) {
+      return file.relativePath;
+    } else {
+      return this.pathForTestFileLocal(file);
+    }
   }
 
-  return path.replace(".rb", rubyTestPattern);
-};
+  public computeTestPath(file: ActiveFile): string {
+    const { testDirectory } = this.settings;
 
-const pathForRubySourceFile = (file: ActiveFile): string => {
-  let path: string;
-  const { rubyTestDirectory, rubyTestPattern } = getRubySettings();
+    if (file.relativePath.match(RegExp(`^${testDirectory}`))) {
+      return file.relativePath;
+    } else {
+      return this.pathForTestFileLocal(file);
+    }
+  }
+  
+  public pathForTestFileLocal(file: ActiveFile): string {
+    let path: string;
+    const { testDirectoryLocal, testPattern } = this.settings;
+  
+    if (file.relativePath.match(/^lib/)) {
+      path = `${testDirectoryLocal}/${file.relativePath}`;
+    } else {
+      path = file.relativePath.replace(/^[^\/]*/, testDirectoryLocal);
+    }
+  
+    return path.replace(".rb", testPattern);
+  }
+  
+  pathForTestFile(file: ActiveFile): string {
+    let path: string;
+    const { testDirectory, testPattern } = this.settings;
+  
+    if (file.relativePath.match(/^lib/)) {
+      path = `${testDirectory}/${file.relativePath}`;
+    } else {
+      path = file.relativePath.replace(/^[^\/]*/, testDirectory);
+    }
+  
+    return path.replace(".rb", testPattern);
+  }
+  
+  public pathForSourceFile(file: ActiveFile): string {
+    let path: string;
+    const { testDirectory, testPattern } = this.settings;
 
-  if (file.relativePath.match(RegExp(`^${rubyTestDirectory}\/lib`))) {
-    path = file.relativePath.replace(/^[^\/]*/, "");
-  } else {
-    path = file.relativePath.replace(/^[^\/]*/, "app");
+    if (file.relativePath.match(RegExp(`^${testDirectory}\/lib`))) {
+      path = file.relativePath.replace(/^[^\/]*/, "");
+    } else {
+      path = file.relativePath.replace(/^[^\/]*/, "app");
+    }
+
+    path = path.replace(testPattern, ".rb");
+    return path;
   }
 
-  path = path.replace(rubyTestPattern, ".rb");
-  return path;
-};
-
-const computeRubyTestPath = (file: ActiveFile) => {
-  const { rubyTestDirectory } = getRubySettings();
-
-  if (file.relativePath.match(RegExp(`^${rubyTestDirectory}`))) {
-    return file.relativePath;
-  } else {
-    return pathForRubyTestFile(file);
-  }
-};
-
-export { computeRubyTestPath, pathForRubyTestFile, pathForRubySourceFile };
+}
